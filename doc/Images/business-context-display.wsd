@@ -1,0 +1,19 @@
+@startuml
+
+skinparam componentStyle uml2
+
+:Letztverbraucher:
+node "Smart Meter Gateway" as Smgw
+node "Zähler 1" as Meter1
+node "Zähler n" as Meter2
+
+frame TRuDI {
+}
+
+Letztverbraucher --> TRuDI
+TRuDI --> Smgw
+Smgw --> Meter1
+Smgw --> Meter2
+
+@enduml
+

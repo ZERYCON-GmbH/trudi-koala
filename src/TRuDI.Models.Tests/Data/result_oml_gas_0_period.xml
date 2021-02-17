@@ -1,0 +1,283 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<!-- TRuDI 1.0.27.0 on Microsoft Windows 10.0.16299 -->
+<UsagePoints xmlns="http://vde.de/AR_2418-6.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://vde.de/AR_2418-6.xsd AR_2418-6.xsd" xmlns:espi="http://naesb.org/espi" xmlns:atom="http://www.w3.org/2005/Atom">
+  <UsagePoint>
+    <espi:ServiceCategory>
+      <espi:kind>1</espi:kind>
+    </espi:ServiceCategory>
+    <usagePointId>1</usagePointId>
+    <Customer>
+      <customerId>2</customerId>
+    </Customer>
+    <InvoicingParty>
+      <invoicingPartyId>STANDARD QUT</invoicingPartyId>
+    </InvoicingParty>
+    <SMGW>
+      <certId>1</certId>
+      <smgwId>EPPC0210486901</smgwId>
+    </SMGW>
+    <Certificate>
+      <certId>1</certId>
+      <certType>3</certType>
+      <certContent>2D2D2D2D2D424547494E2043455254494649434154452D2D2D2D2D0D0A4D4949432B6A434341714367417749424167494A414D32446E395662337444384D416F4743437147534D343942414D434D49476C4D517377435159445651514745774A455254454D4D416F470D0A4131554543424D4454565A514D52417744675944565151484577645362334E3062324E724D5373774B5159445651514B45794A4563693467546D563161474631637942555A57786C613239740D0A625856756157746864476C766269424862574A494D524177446759445651514C457764455A585A6C624739774D525177456759445651514445777445546C51675530314856794244515445680D0A4D42384743537147534962334451454A415259536332316E6479316A595542755A58566F5958567A4C6D526C4D423458445445304D446B794F54457A4E4445784E6C6F58445449304D446B790D0A4F54457A4E4445784E6C6F7767614D78437A414A42674E5642415954416B52464D517777436759445651514945774E4E566C41784544414F42674E564241635442314A7663335276593273780D0A4B7A417042674E5642416F54496B52794C69424F5A58566F5958567A4946526C624756726232317464573570613246306157397549456474596B67784544414F42674E56424173544230526C0D0A646D5673623341784654415442674E5642414D54444752756443316A6232357A6457316C636A45654D42774743537147534962334451454A415259506332316E643042755A58566F5958567A0D0A4C6D526C4D466B77457759484B6F5A497A6A3043415159494B6F5A497A6A30444151634451674145746848735548784D4C33426B3535655A7748726B476250716C745158794E7679626865510D0A7337494F3253545A316B6E704547596E4B524869676A56794772343476386866454C4C736535347A36507751564262434F364F42754443427454414D42674E5648524D4241663845416A41410D0A4D42454743574347534147472B45494241515145417749486744416442674E5648535545466A4155426767724267454642516344416759494B775942425155484177457744675944565230500D0A4151482F42415144416765414D4230474131556444675157424253327A52322F61367A613933534E317963494B576D664E3856537054414A42674E5648534D45416A41414D446B47413155640D0A487751794D4441774C7141736F4371474B476830644841364C79396B5A5859756447567A644335755A58566F5958567A4C6D526C4C334E745A3363766332316E6479356A636D7777436759490D0A4B6F5A497A6A30454177494453414177525149674743672F3078666854415036684E477963705A4E56614D4A6731496A4D636D6B53794F2B4C75554F7459304349514463555153305765784E0D0A73686442643957556E4E73707A6A684E36346945327430374D4272626535554746673D3D0D0A2D2D2D2D2D454E442043455254494649434154452D2D2D2D2D0D0A</certContent>
+    </Certificate>
+    <tariffName>10000032200010TAF0100001</tariffName>
+    <AnalysisProfile>
+      <tariffUseCase>1</tariffUseCase>
+      <tariffId>10000032200010TAF0100001</tariffId>
+      <billingPeriod>
+        <duration>610186</duration>
+        <start>2017-11-24T00:00:00.0000000+01:00</start>
+      </billingPeriod>
+      <TariffStage>
+        <tariffNumber>0</tariffNumber>
+        <description></description>
+        <obisCode>010000000FF</obisCode>
+      </TariffStage>
+      <defaultTariffNumber>0</defaultTariffNumber>
+    </AnalysisProfile>
+    <LogEntry>
+      <LogEvent>
+        <level>1</level>
+        <text>Der Protokolldienst für das Letztverbraucherlogbuch des Benutzers eppc0263335330.sm wurde gestartet.</text>
+        <outcome>0</outcome>
+        <timestamp>2017-11-24T14:20:55+01:00</timestamp>
+      </LogEvent>
+    </LogEntry>
+    <LogEntry>
+      <LogEvent>
+        <level>1</level>
+        <text>Das Kommunikationsprofil eppc0263335330.sm wurde angelegt. Dabei sind 0 Fehler aufgetreten: </text>
+        <outcome>0</outcome>
+        <timestamp>2017-11-24T14:20:56+01:00</timestamp>
+      </LogEvent>
+    </LogEntry>
+    <LogEntry>
+      <LogEvent>
+        <level>1</level>
+        <text>Das Tarifprofil 01005e318027.emt-ekumdl-taf-taf07-mtr-7lgb0001018986-3260934645.sm wurde angelegt. Dabei sind 0 Fehler aufgetreten: </text>
+        <outcome>0</outcome>
+        <timestamp>2017-11-24T14:21:51+01:00</timestamp>
+      </LogEvent>
+    </LogEntry>
+    <LogEntry>
+      <LogEvent>
+        <level>1</level>
+        <text>Das Tarifprofil 01005e318021.emt-ekumdl-taf-taf01-mtr-7lgb0001018986-7823545465.sm wurde angelegt. Dabei sind 0 Fehler aufgetreten: </text>
+        <outcome>0</outcome>
+        <timestamp>2017-11-24T14:30:53+01:00</timestamp>
+      </LogEvent>
+    </LogEntry>
+    <LogEntry>
+      <LogEvent>
+        <level>1</level>
+        <text>Das Objekt 7lgb0001018986.sm wurde an der WAN-Schnittstelle über das WAN-Profil gwa-management.sm ausgelesen.</text>
+        <outcome>0</outcome>
+        <timestamp>2017-11-25T02:00:50+01:00</timestamp>
+      </LogEvent>
+    </LogEntry>
+    <LogEntry>
+      <LogEvent>
+        <level>1</level>
+        <text>Die innerhalb des Zeitraums von 2017-11-24.11.00.00.000000 bis 2017-11-25.00.00.00.000000 durch das Tarifprofil emt-ekumdl-taf-taf07-mtr-7lgb0001018986-3260934645.sm erfassten Messwerte wurden an den Marktteilnehmer mit dem Kommunikationsprofil eppc0203145032.sm bereitgestellt.</text>
+        <outcome>0</outcome>
+        <timestamp>2017-11-25T13:01:10+01:00</timestamp>
+      </LogEvent>
+    </LogEntry>
+    <LogEntry>
+      <LogEvent>
+        <level>1</level>
+        <text>Das Objekt 01005e318027.emt-ekumdl-taf-taf07-mtr-7lgb0001018986-3260934645.sm wurde an der WAN-Schnittstelle über das WAN-Profil gwa-management.sm ausgelesen.</text>
+        <outcome>0</outcome>
+        <timestamp>2017-11-29T13:47:20+01:00</timestamp>
+      </LogEvent>
+    </LogEntry>
+    <LogEntry>
+      <LogEvent>
+        <level>1</level>
+        <text>Der letzte Spannungsverlust war am 2017-11-29.16.50.01.000000</text>
+        <outcome>0</outcome>
+        <timestamp>2017-11-29T16:54:35+01:00</timestamp>
+      </LogEvent>
+    </LogEntry>
+    <LogEntry>
+      <LogEvent>
+        <level>1</level>
+        <text>Der Protokolldienst für das Letztverbraucherlogbuch des Benutzers eppc0263335330.sm wurde gestartet.</text>
+        <outcome>0</outcome>
+        <timestamp>2017-11-29T16:54:36+01:00</timestamp>
+      </LogEvent>
+    </LogEntry>
+    <LogEntry>
+      <LogEvent>
+        <level>3</level>
+        <text>Der Messbetrieb wird eingestellt.</text>
+        <outcome>1</outcome>
+        <timestamp>2017-11-29T16:55:30+01:00</timestamp>
+      </LogEvent>
+    </LogEntry>
+    <LogEntry>
+      <LogEvent>
+        <level>1</level>
+        <text>Der Messbetrieb wird wieder aufgenommen.</text>
+        <outcome>0</outcome>
+        <timestamp>2017-11-29T16:55:33+01:00</timestamp>
+      </LogEvent>
+    </LogEntry>
+    <LogEntry>
+      <LogEvent>
+        <level>1</level>
+        <text>Die Uhrzeit wurde durch Neusynchronisation wiederhergestellt.</text>
+        <outcome>0</outcome>
+        <timestamp>2017-11-29T16:55:33+01:00</timestamp>
+      </LogEvent>
+    </LogEntry>
+    <LogEntry>
+      <LogEvent>
+        <level>1</level>
+        <text>Selbsttest wurde ohne Fehler abgeschlossen.</text>
+        <outcome>0</outcome>
+        <timestamp>2017-11-29T16:55:35+01:00</timestamp>
+      </LogEvent>
+    </LogEntry>
+    <LogEntry>
+      <LogEvent>
+        <level>1</level>
+        <text>Das Auswerteprofil 10000032190010TAF0700001 (ID: emt-ekumdl-taf-taf07-mtr-7lgb0001018986-3260934645.sm) wurde aktiviert.</text>
+        <outcome>0</outcome>
+        <timestamp>2017-11-29T17:09:08+01:00</timestamp>
+      </LogEvent>
+    </LogEntry>
+    <LogEntry>
+      <LogEvent>
+        <level>1</level>
+        <text>Das Auswerteprofil 10000032200010TAF0100001 (ID: emt-ekumdl-taf-taf01-mtr-7lgb0001018986-7823545465.sm) wurde aktiviert.</text>
+        <outcome>0</outcome>
+        <timestamp>2017-11-29T17:09:21+01:00</timestamp>
+      </LogEvent>
+    </LogEntry>
+    <LogEntry>
+      <LogEvent>
+        <level>1</level>
+        <text>Die innerhalb des Zeitraums von 2017-11-29.00.00.00.000000 bis 2017-11-30.00.00.00.000000 durch das Tarifprofil emt-ekumdl-taf-taf07-mtr-7lgb0001018986-3260934645.sm erfassten Messwerte wurden an den Marktteilnehmer mit dem Kommunikationsprofil eppc0203145032.sm bereitgestellt.</text>
+        <outcome>0</outcome>
+        <timestamp>2017-11-29T19:09:30+01:00</timestamp>
+      </LogEvent>
+    </LogEntry>
+    <LogEntry>
+      <LogEvent>
+        <level>1</level>
+        <text>Die innerhalb des Zeitraums von 2017-11-24.00.00.00.000000 bis 2017-12-01.00.00.00.000000 durch das Tarifprofil emt-ekumdl-taf-taf01-mtr-7lgb0001018986-7823545465.sm erfassten Messwerte wurden an den Marktteilnehmer mit dem Kommunikationsprofil eppc0203145032.sm bereitgestellt.</text>
+        <outcome>0</outcome>
+        <timestamp>2017-11-29T19:09:43+01:00</timestamp>
+      </LogEvent>
+    </LogEntry>
+    <LogEntry>
+      <LogEvent>
+        <level>1</level>
+        <text>Der Protokolldienst für das Letztverbraucherlogbuch des Benutzers eppc0263335330.sm wurde gestartet.</text>
+        <outcome>0</outcome>
+        <timestamp>2017-11-30T08:39:25+01:00</timestamp>
+      </LogEvent>
+    </LogEntry>
+    <LogEntry>
+      <LogEvent>
+        <level>3</level>
+        <text>Der Messbetrieb wird eingestellt.</text>
+        <outcome>1</outcome>
+        <timestamp>2017-11-30T08:40:19+01:00</timestamp>
+      </LogEvent>
+    </LogEntry>
+    <LogEntry>
+      <LogEvent>
+        <level>1</level>
+        <text>Die Uhrzeit wurde durch Neusynchronisation wiederhergestellt.</text>
+        <outcome>0</outcome>
+        <timestamp>2017-11-30T08:40:21+01:00</timestamp>
+      </LogEvent>
+    </LogEntry>
+    <LogEntry>
+      <LogEvent>
+        <level>1</level>
+        <text>Selbsttest wurde ohne Fehler abgeschlossen.</text>
+        <outcome>0</outcome>
+        <timestamp>2017-11-30T08:40:21+01:00</timestamp>
+      </LogEvent>
+    </LogEntry>
+    <LogEntry>
+      <LogEvent>
+        <level>1</level>
+        <text>Der Messbetrieb wird wieder aufgenommen.</text>
+        <outcome>0</outcome>
+        <timestamp>2017-11-30T08:40:21+01:00</timestamp>
+      </LogEvent>
+    </LogEntry>
+    <LogEntry>
+      <LogEvent>
+        <level>1</level>
+        <text>Die innerhalb des Zeitraums von 2017-11-29.00.00.00.000000 bis 2017-11-30.00.00.00.000000 durch das Tarifprofil emt-ekumdl-taf-taf07-mtr-7lgb0001018986-3260934645.sm erfassten Messwerte wurden an den Marktteilnehmer mit dem Kommunikationsprofil eppc0203145032.sm bereitgestellt.</text>
+        <outcome>0</outcome>
+        <timestamp>2017-11-30T13:01:11+01:00</timestamp>
+      </LogEvent>
+    </LogEntry>
+    <LogEntry>
+      <LogEvent>
+        <level>1</level>
+        <text>Der Endbenutzer mit der ID eppc0263335330.sm hat sich auf dem SMGW eingeloggt. Dabei sind folgende Fehler aufgetreten: </text>
+        <outcome>0</outcome>
+        <timestamp>2017-11-30T15:01:59+01:00</timestamp>
+      </LogEvent>
+    </LogEntry>
+    <MeterReading>
+      <Meter>
+        <meterId>7lgb0001018986</meterId>
+      </Meter>
+      <meterReadingId>0700030100FF.7lgb0001018986.1</meterReadingId>
+      <ReadingType>
+        <espi:powerOfTenMultiplier>0</espi:powerOfTenMultiplier>
+        <espi:uom>42</espi:uom>
+        <scaler>-3</scaler>
+        <obisCode>0700030100FF</obisCode>
+        <qualifiedLogicalName>0700030100FF.7lgb0001018986.sm</qualifiedLogicalName>
+      </ReadingType>
+      <IntervalBlock>
+        <interval>
+          <duration>46604</duration>
+          <start>2017-11-29T17:09:00+01:00</start>
+        </interval>
+        <IntervalReading>
+          <espi:value>0</espi:value>
+          <timePeriod>
+            <duration>0</duration>
+            <start>2017-11-29T17:09:00+01:00</start>
+          </timePeriod>
+          <statusPTB>0</statusPTB>
+        </IntervalReading>
+        <IntervalReading>
+          <espi:value>0</espi:value>
+          <timePeriod>
+            <duration>0</duration>
+            <start>2017-11-30T00:04:46+01:00</start>
+          </timePeriod>
+          <statusPTB>0</statusPTB>
+        </IntervalReading>
+        <IntervalReading>
+          <espi:value>0</espi:value>
+          <timePeriod>
+            <duration>0</duration>
+            <start>2017-11-30T05:20:22+01:00</start>
+          </timePeriod>
+          <statusPTB>0</statusPTB>
+        </IntervalReading>
+        <IntervalReading>
+          <espi:value>0</espi:value>
+          <timePeriod>
+            <duration>0</duration>
+            <start>2017-11-30T06:05:44+01:00</start>
+          </timePeriod>
+          <statusPTB>0</statusPTB>
+        </IntervalReading>
+      </IntervalBlock>
+    </MeterReading>
+  </UsagePoint>
+</UsagePoints>

@@ -1,0 +1,476 @@
+﻿@using TRuDI.Backend.Application
+@using TRuDI.Backend.Utils
+@using TRuDI.Models
+@using TRuDI.Models.BasicData
+@inject ApplicationState StateService
+@{
+    ViewData["Title"] = "Abrechnungsdaten";
+    var originalValueLists = StateService.CurrentDataResult.OriginalValueLists;
+    var meterReadings = StateService.CurrentDataResult;
+}
+
+<script type="text/javascript">
+
+    var ovlStatusVisible = false;
+
+</script>
+
+@if (StateService.LastErrorMessages.Count > 0)
+{
+    <div class="panel panel-danger">
+        <div class="panel-heading">Fehler</div>
+        <div class="panel-body">
+
+            @foreach (var error in StateService.LastErrorMessages)
+            {
+                <p>@error</p>
+            }
+
+        </div>
+    </div>
+}
+
+<div class="panel panel-primary">
+    <div class="panel-heading">Messlokation @StateService.CurrentDataResult.Model.UsagePointId</div>
+    <div class="panel-body">
+
+        @if (StateService.CurrentSupplierFile?.Model == null)
+        {
+            @await Html.PartialAsync("_SummaryHeaderDisplayFunctionPartial");
+        }
+        else
+        {
+            @await Html.PartialAsync("_SummaryHeaderTransparencyFunctionPartial");
+        }
+    </div>
+</div>
+
+
+<div>
+    <ul class="nav nav-tabs" role="tablist">
+        @if (StateService.CurrentSupplierFile?.TafData != null)
+        {
+            <li role="presentation" class="active"><a href="#tab_tariffdata" aria-controls="tab_tariffdata" role="tab" data-toggle="tab">Tarifdaten</a></li>
+        }
+
+        @if (originalValueLists?.Count == 1)
+        {
+            var ovl = originalValueLists.First();
+            <li role="presentation" class="@(StateService.CurrentSupplierFile?.TafData == null ? "active" : "")"><a href="#tab_hvl_@ovl.GetOriginalValueListIdent()" aria-controls="tab_hvl_@ovl.GetOriginalValueListIdent()" role="tab" data-toggle="tab">Historische Verbrauchswerte</a></li>
+            <li role="presentation"><a href="#tab_@ovl.GetOriginalValueListIdent()" aria-controls="tab_@ovl.GetOriginalValueListIdent()" role="tab" data-toggle="tab">Originäre Messwertliste</a></li>
+        }
+        else
+        {
+            <li role="presentation" class="dropdown @(StateService.CurrentSupplierFile?.TafData == null ? "active" : "")">
+                <a href="#" class="dropdown-toggle" id="tab-dropdown-hvl" data-toggle="dropdown" aria-controls="tab-dropdown-contents" aria-expanded="false">Historische Verbrauchswerte<span class="caret"></span></a>
+                <ul class="dropdown-menu" aria-labelledby="tab-dropdown-hvl" id="tab-dropdown-hvl-contents">
+                    @foreach (var ovl in originalValueLists ?? new List<OriginalValueList>())
+                    {
+                        <li class="@(StateService.CurrentSupplierFile?.TafData == null && originalValueLists.First() == ovl ? "active" : "")"><a href="#tab_hvl_@ovl.GetOriginalValueListIdent()" id="#tab_hvl_@ovl.GetOriginalValueListIdent()-tab" aria-expanded="false" aria-controls="tab_hvl_@ovl.GetOriginalValueListIdent()" role="tab" data-toggle="tab">@ovl.Meter.ToFormattedDeviceId() (@ovl.Obis.ToReadableString())</a></li>
+                    }
+                </ul>
+            </li>
+
+            <li role="presentation" class="dropdown">
+                <a href="#" class="dropdown-toggle" id="tab-dropdown-ovl" data-toggle="dropdown" aria-controls="tab-dropdown-contents" aria-expanded="false">Originäre Messwertliste<span class="caret"></span></a>
+                <ul class="dropdown-menu" aria-labelledby="tab-dropdown-ovl" id="tab-dropdown-ovl-contents">
+                    @foreach (var ovl in originalValueLists)
+                    {
+                        <li class=""><a href="#tab_@ovl.GetOriginalValueListIdent()" id="#tab_@ovl.GetOriginalValueListIdent()-tab" aria-expanded="false" aria-controls="tab_@ovl.GetOriginalValueListIdent()" role="tab" data-toggle="tab">@ovl.Meter.ToFormattedDeviceId() (@ovl.Obis.ToReadableString())</a></li>
+                    }
+                </ul>
+            </li>
+        }
+
+        <li role="presentation"><a href="#tab_logdata" aria-controls="tab_logdata" role="tab" data-toggle="tab">Logbuchdaten</a></li>
+    </ul>
+
+    <div class="tab-content">
+
+        <div role="tabpanel" class="tab-pane" id="tab_logdata">
+            <div class="panel panel-primary">
+                <div class="panel-heading">Logbuchdaten</div>
+                <div class="panel-body">
+
+                    @if (StateService.CurrentDataResult.Model.LogEntries.Any())
+                    {
+                        var logBegin = StateService.CurrentDataResult.Model.LogEntries.First().LogEvent.Timestamp.DayStart();
+                        var logEnd = StateService.CurrentDataResult.Model.LogEntries.Last().LogEvent.Timestamp.DayEnd();
+                        var logSelectedEnd = logBegin.DayEnd();
+
+                        <table class="table-condensed">
+                            <tr>
+                                <th>
+                                    Startzeitpunkt
+                                </th>
+
+                                <th>
+                                    Endzeitpunkt
+                                </th>
+
+                                <th></th>
+                                <th></th>
+                            </tr>
+
+                            <tr>
+                                <td>
+                                    <div class="form-group">
+                                        <div class='input-group date' id="logStart">
+                                            <input type='text' class="form-control" />
+                                            <span class="input-group-addon">
+                                                <span class="glyphicon glyphicon-calendar"></span>
+                                            </span>
+                                        </div>
+                                    </div>
+                                </td>
+
+                                <td>
+                                    <div class="form-group">
+                                        <div class='input-group date' id="logEnd">
+                                            <input type='text' class="form-control" />
+                                            <span class="input-group-addon">
+                                                <span class="glyphicon glyphicon-calendar"></span>
+                                            </span>
+                                        </div>
+                                    </div>
+                                </td>
+
+                                <td>
+                                    <div class="form-group">
+                                        <div class='input-group date'>
+                                            <input type='text' id="logFilterText" class="form-control" />
+                                        </div>
+                                    </div>
+                                </td>
+
+                                <td>
+                                    <div class="form-group">
+                                        <button type="button" class="btn btn-default" id="btnRead" onclick="filterLog();">Filtern</button>
+                                    </div>
+                                </td>
+                            </tr>
+                        </table>
+
+                        <div id="log-table">
+                            @await Component.InvokeAsync("LogItemsView", new { startTime = logBegin, endTime = logSelectedEnd })
+                        </div>
+
+                        <script type="text/javascript">
+                            $(function() {
+                                $("#logStart").datetimepicker({
+                                    locale: 'de',
+                                    format: 'DD.MM.YYYY'
+                                });
+                                $("#logEnd").datetimepicker({
+                                    useCurrent: false,
+                                    locale: 'de',
+                                    format: 'DD.MM.YYYY'
+                                });
+
+                                $("#logStart").data("DateTimePicker").minDate(moment('@logBegin.DayStart().ToIso8601()'));
+                                $("#logStart").data("DateTimePicker").maxDate(moment('@logEnd.DayEnd().ToIso8601()'));
+                                $("#logStart").data("DateTimePicker").date(moment('@logBegin.DayStart().ToIso8601()'));
+
+                                $("#logEnd").data("DateTimePicker").minDate(moment('@logBegin.DayStart().ToIso8601()'));
+                                $("#logEnd").data("DateTimePicker").maxDate(moment('@logEnd.DayEnd().ToIso8601()'));
+                                $("#logEnd").data("DateTimePicker").date(moment('@logSelectedEnd.DayEnd().ToIso8601()'));
+
+                                $("#logStart").on("dp.change", function (e) {
+                                    if (e.date > $('#logEnd').data("DateTimePicker").date()) {
+                                        $('#logEnd').data("DateTimePicker").date(e.date);
+                                    }
+                                });
+
+                                $("#logEnd").on("dp.change", function (e) {
+                                    if (e.date < $('#logStart').data("DateTimePicker").date()) {
+                                        $('#logStart').data("DateTimePicker").date(e.date);
+                                    }
+                                });                            });
+
+                            function filterLog() {
+
+                                $.ajax({
+                                    url: '/DataView/FilterLog',
+                                    type: "POST",
+                                    data: "startTime=" +
+                                        encodeURIComponent($("#logStart").data("DateTimePicker").date().toISOString()) +
+                                        "&endTime=" +
+                                        encodeURIComponent($("#logEnd").data("DateTimePicker").date().toISOString()) +
+                                        "&filterText=" +
+                                        encodeURIComponent($("#logFilterText").val()),
+                                    contentType: 'application/x-www-form-urlencoded',
+                                    processData: false,
+                                    success: function(result) {
+                                        $("#log-table").html(result);
+                                    },
+                                    error: function(err) {}
+                                });
+                            };
+                        </script>
+                    }
+                    else
+                    {
+                        <p>Keine Logbucheinträge verfügbar.</p>
+                    }
+                </div>
+            </div>
+        </div>
+
+
+
+        @foreach (var ovl in originalValueLists)
+        {
+            if (ovl.HasData)
+            {
+                var ovlBegin = ovl.Start.Value;
+                var ovlEnd = ovl.End.Value;
+
+                if (ovlBegin.Date == ovlEnd.Date)
+                {
+                    ovlEnd = ovlBegin + TimeSpan.FromDays(1);
+                }
+
+                <div role="tabpanel" class="tab-pane" id="tab_@ovl.GetOriginalValueListIdent()">
+                    <div class="panel panel-primary">
+                        <div class="panel-heading">Originäre Messwertliste @ovl.Meter.ToFormattedDeviceId() (@ovl.Obis.ToReadableString())</div>
+                        <div class="panel-body">
+
+                            <table class="table">
+                                <tr>
+                                    <th>Zähler</th>
+                                    <th>Messperiode</th>
+                                    <th>Register</th>
+                                    <th>Beschreibung</th>
+                                </tr>
+                                <tr>
+                                    <td>@ovl.Meter.ToFormattedDeviceId()</td>
+                                    <td>@ovl.MeasurementPeriod.GetMeasurementPeriodString()</td>
+                                    <td>@ovl.Obis.ToReadableString()</td>
+                                    <td>@ovl.Obis.GetLabel()</td>
+                                </tr>
+
+                                <tr>
+                                    <th>Startzeitpunkt</th>
+                                    <th>Endzeitpunkt</th>
+                                    <th>Werte</th>
+                                    <th>Lücken/Fehler</th>
+                                </tr>
+
+                                <tr>
+                                    <td>@ovl.Start.ToFormatedString()</td>
+                                    <td>@ovl.End.ToFormatedString()</td>
+                                    <td>@ovl.ValueCount</td>
+
+                                    <td>
+                                        @if (!ovl.HasErrors && ovl.GapCount == 0)
+                                        {
+                                            <span>keine Fehler</span>
+                                        }
+                                        else
+                                        {
+                                            if (ovl.GapCount > 0)
+                                            {
+                                                <span>
+                                                    <i class="fa fa-warning"></i>
+                                                    @ovl.GapCount @(ovl.GapCount == 1 ? "Lücke" : "Lücken") gefunden
+                                                </span>
+                                            }
+
+                                            if (ovl.FatalErrorCount > 0)
+                                            {
+                                                <div>
+                                                    <span>
+                                                        <i class="@StatusPTB.FatalError.ToStatusIcon()"></i>
+                                                        @ovl.FatalErrorCount @(StatusPTB.FatalError.GetStatusString(ovl.FatalErrorCount))
+                                                    </span>
+                                                </div>
+                                            }
+
+                                            {
+                                                <div>
+                                                    <span>
+                                                        <i class="@StatusPTB.CriticalTemporaryError.ToStatusIcon()"></i>
+                                                        @(ovl.CriticalTempErrorCount) @(StatusPTB.CriticalTemporaryError.GetStatusString(ovl.CriticalTempErrorCount))
+                                                    </span>
+                                                </div>
+                                            }
+
+                                            if (ovl.TempErrorCount > 0)
+                                            {
+                                                <div>
+                                                    <span>
+                                                        <i class="@StatusPTB.TemporaryError.ToStatusIcon()"></i>
+                                                        @(ovl.TempErrorCount) @(StatusPTB.TemporaryError.GetStatusString(ovl.TempErrorCount))
+                                                    </span>
+                                                </div>
+                                            }
+
+                                            if (ovl.WarningCount > 0)
+                                            {
+                                                <div>
+                                                    <span>
+                                                        <i class="@StatusPTB.Warning.ToStatusIcon()"></i>
+                                                        @ovl.WarningCount @(StatusPTB.Warning.GetStatusString(ovl.WarningCount))
+                                                    </span>
+                                                </div>
+                                            }
+                                        }
+
+                                    </td>
+
+                                </tr>
+                            </table>
+
+                            <table style="width: 100%">
+                                <tr>
+                                    <td>
+                                        <div class='input-group date' id="dp_start_@ovl.GetOriginalValueListIdent()" style="width: auto;">
+                                            <input type='text' class="form-control" />
+                                            <span class="input-group-addon" style="width: auto;">
+                                                <span class="glyphicon glyphicon-calendar"></span>
+                                            </span>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="text-right">
+                                            <button type="button" class="btn btn-default" id="btnFilterOvlErrors_@ovl.GetOriginalValueListIdent()" onclick="showErrorsList('@ovl.GetOriginalValueListIdent()');">Status-Übersicht anzeigen</button>
+                                            <button type="button" class="btn btn-default" style="display: none;" id="btnShowOvlData_@ovl.GetOriginalValueListIdent()" onclick="showDataList('@ovl.GetOriginalValueListIdent()');">Messwerte anzeigen</button>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </table>
+
+                            <div id="ovl_@ovl.GetOriginalValueListIdent()">
+                                @await Component.InvokeAsync("OriginalValueListView", new { ovl, startTime = ovlBegin })
+                            </div>
+
+                            <script type="text/javascript">
+                                $(function() {
+                                    $("#dp_start_@ovl.GetOriginalValueListIdent()").datetimepicker({
+                                        locale: 'de',
+                                        format: 'DD.MM.YYYY'
+                                    });
+
+                                    $("#dp_start_@ovl.GetOriginalValueListIdent()").data("DateTimePicker").minDate(moment('@ovlBegin.Date.ToIso8601()'));
+                                    $("#dp_start_@ovl.GetOriginalValueListIdent()").data("DateTimePicker").maxDate(moment('@ovlEnd.GetDateTimePickerEndDate().ToIso8601()'));
+                                    $("#dp_start_@ovl.GetOriginalValueListIdent()").data("DateTimePicker").date(moment('@ovlBegin.Date.ToIso8601()'));
+
+                                    $("#dp_start_@ovl.GetOriginalValueListIdent()").on("dp.change", function (e) {
+                                        loadOvlDay("@ovl.GetOriginalValueListIdent()");
+                                    });
+
+                                    $("#dp_start_@ovl.GetOriginalValueListIdent()").on("dp.hide", function (e) {
+                                        if (ovlStatusVisible) {
+                                            loadOvlDay("@ovl.GetOriginalValueListIdent()");
+                                            ovlStatusVisible = false;
+                                        }
+                                    });
+                                });
+                            </script>
+
+                        </div>
+                    </div>
+                </div>
+            }
+            else
+            {
+                <div role="tabpanel" class="tab-pane" id="tab_@ovl.GetOriginalValueListIdent()">
+                    <div class="panel panel-primary">
+                        <div class="panel-heading">Originäre Messwertliste @ovl.Meter.ToFormattedDeviceId() (@ovl.Obis.ToReadableString())</div>
+                        <div class="panel-body">
+                            <p>Es konnten keine gültigen Messwerte ermittelt werden.</p>
+                        </div>
+                    </div>
+                </div>
+            }
+        }
+
+        <script type="text/javascript">
+
+            function loadOvlDay(ovlId) {
+                $("#btnFilterOvlErrors_" + ovlId).show();
+                $("#btnShowOvlData_" + ovlId).hide();
+
+                $.ajax({
+                    url: '/DataView/FilterOvl',
+                    type: "POST",
+                    data: "startTime=" +
+                        encodeURIComponent($("#dp_start_" + ovlId).data("DateTimePicker").date().toISOString()) +
+                        "&ovlId=" +
+                        encodeURIComponent(ovlId),
+                    contentType: 'application/x-www-form-urlencoded',
+                    processData: false,
+                    success: function (result) {
+                        $("#ovl_" + ovlId).html(result);
+                    },
+                    error: function (err) { }
+                });
+            };
+
+            function selectOvlDay(ovlId, timestamp) {
+                var currentDate = $("#dp_start_" + ovlId).data("DateTimePicker").date();
+                if (currentDate.isSame(timestamp)) {
+                    loadOvlDay(ovlId);
+                } else {
+                    $("#dp_start_" + ovlId).data("DateTimePicker").date(timestamp);
+                }
+            };
+
+            function showErrorsList(ovlId) {
+                ovlStatusVisible = true;
+                $("#btnFilterOvlErrors_" + ovlId).hide();
+                $("#btnShowOvlData_" + ovlId).show();
+
+                $.ajax({
+                    url: '/DataView/ShowErrorsList',
+                    type: "POST",
+                    data: "ovlId=" + encodeURIComponent(ovlId),
+                    contentType: 'application/x-www-form-urlencoded',
+                    processData: false,
+                    success: function (result) {
+                        $("#ovl_" + ovlId).html(result);
+                    },
+                    error: function (err) { }
+                });
+            };
+
+            function showDataList(ovlId) {
+                loadOvlDay(ovlId);
+                ovlStatusVisible = false;
+            };
+
+        </script>
+
+
+
+        @foreach (var ovl in originalValueLists)
+        {
+            <div role="tabpanel" class="tab-pane @(StateService.CurrentSupplierFile?.TafData == null && originalValueLists.First() == ovl ? "active" : "")" id="tab_hvl_@ovl.GetOriginalValueListIdent()">
+                <div class="panel panel-primary">
+                    <div class="panel-heading">Historische Verbrauchswerte @ovl.Meter.ToFormattedDeviceId() (@ovl.Obis.ToReadableString())</div>
+                    <div class="panel-body">
+                        <div id="hvl_@ovl.Meter">
+                            @await Component.InvokeAsync("HistoricValueListView", new { ovl })
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+
+        @if (StateService.CurrentSupplierFile?.TafData?.Data != null)
+        {
+            <div role="tabpanel" class="tab-pane active" id="tab_tariffdata">
+                <div class="panel panel-primary">
+                    <div class="panel-heading">Tarifdaten</div>
+                    <div class="panel-body">
+                        @await Component.InvokeAsync(StateService.CurrentSupplierFile?.TafData.DetailView.Name)
+                    </div>
+                </div>
+            </div>
+        }
+
+    </div>
+</div>
+
+@await Html.PartialAsync("_ExportDataDialog")
+

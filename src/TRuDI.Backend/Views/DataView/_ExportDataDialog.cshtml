@@ -1,0 +1,86 @@
+@using TRuDI.Backend.Application
+@using TRuDI.Backend.Utils
+@using TRuDI.Models
+@using TRuDI.Models.BasicData
+@inject ApplicationState StateService
+@{
+    var data = StateService?.CurrentDataResult?.Model;
+    var meterReadings = StateService?.CurrentDataResult;
+    var originalValueLists = StateService?.CurrentDataResult?.OriginalValueLists;
+}
+
+@if (data != null)
+{
+    <div class="modal" id="exportSelectionDialog" tabindex="-1" role="dialog" aria-labelledby="exportSelectionDialogLabel">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title" id="exportSelectionDialogLabel">Daten exportieren</h4>
+                </div>
+                <div class="modal-body">
+
+                    <div class="container">
+                        <form>
+                            <div class="radio">
+                                <label><input type="radio" name='ExportDataRadio' value='XML' checked>XML-Datei nach AR 2418-6</label>
+                            </div>
+
+                            @if (data.LogEntries.Count > 0)
+                            {
+                                <div class="radio">
+                                    <label><input type="radio" name='ExportDataRadio' value='CSV_LOG_ITEMS'>Logbuchdaten als CSV-Datei</label>
+                                </div>
+                            }
+
+                            @foreach (var ovl in originalValueLists)
+                            {
+                                <div class="radio">
+                                    <label><input type="radio" name='ExportDataRadio' value='@ovl.GetOriginalValueListIdent()'>Originäre Messwertliste @ovl.Obis.ToReadableString() von Zähler @ovl.Meter.ToFormattedDeviceId() als CSV-Datei</label>
+                                </div>
+                            }
+
+                        </form>
+                    </div>
+
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Abbrechen</button>
+                    <button type="button" class="btn btn-primary" data-dismiss="modal" onclick="exportData()">Exportieren</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <script type="text/javascript">
+        function exportData() {
+            var exportType = $('input[name="ExportDataRadio"]:checked').val();
+
+            if (window.hasOwnProperty("process")) {
+                switch (exportType) {
+                case "XML":
+                    showSaveFileDialog("/DataView/ExportToFile/" + exportType, "XML-Datei nach VDE AR 2418-6", "xml");
+                    break;
+
+                case "CSV_LOG_ITEMS":
+                    showSaveFileDialog("/DataView/ExportToFile/" + exportType,
+                        "CSV-Datei (Trennzeichen-getrennt)",
+                        "csv");
+                    break;
+
+                default:
+                    showSaveFileDialog("/DataView/ExportToFile/" + exportType,
+                        "CSV-Datei (Trennzeichen-getrennt)",
+                        "csv");
+                    break;
+                }
+            } else {
+                var link = document.createElement("a");
+                link.href = "/DataView/Export/" + exportType;
+                link.click();
+            }
+        }
+    </script>
+}

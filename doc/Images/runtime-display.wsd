@@ -1,0 +1,84 @@
+@startuml
+
+
+actor Letztverbraucher
+
+box "Views" #LightBlue
+    participant "OperatingMode-\nSelection" as OpModSelView 
+    participant "Connect" as ConnectView 
+    participant "Contracts" as ContractsView
+    participant "Data" as DataView
+    participant "Progress" as ProgressView
+end box
+
+participant "ApplicationState" as AppState
+participant "HAN-Adapter" as HanAdapter
+
+Letztverbraucher -> OpModSelView : Startet TRuDI
+activate OpModSelView
+
+Letztverbraucher -> OpModSelView : Wählt Display-Funktion aus
+OpModSelView -> ConnectView
+deactivate OpModSelView
+
+activate ConnectView
+Letztverbraucher -> ConnectView : Gibt Verbindungsdaten ein
+Letztverbraucher -> ConnectView : Verbinden
+
+ConnectView ->> AppState : ConnectAndLoadContracts()
+activate AppState
+
+ConnectView ->> ProgressView : Anzeigen
+deactivate ConnectView
+activate ProgressView
+
+AppState -> HanAdapter : Connect()
+activate HanAdapter
+ProgressView <<-- HanAdapter : ProgressCallback()
+AppState <-- HanAdapter
+deactivate HanAdapter
+
+AppState -> HanAdapter : LoadAvailableContracts()
+activate HanAdapter
+ProgressView <<-- HanAdapter : ProgressCallback()
+ProgressView <<-- HanAdapter : ProgressCallback()
+AppState <-- HanAdapter 
+deactivate HanAdapter
+
+AppState -> ContractsView : Anzeigen
+deactivate ProgressView
+deactivate AppState
+activate ContractsView
+
+Letztverbraucher -> ContractsView : Wählt Vertrag und Zeitbereich aus
+
+ContractsView -> AppState : LoadData()
+activate AppState
+
+ContractsView ->> ProgressView : Anzeigen
+deactivate ConnectView
+activate ProgressView
+deactivate ContractsView
+
+AppState -> HanAdapter : LoadData()
+activate HanAdapter
+ProgressView <<-- HanAdapter : ProgressCallback()
+ProgressView <<-- HanAdapter : ProgressCallback()
+AppState <-- HanAdapter 
+
+group Aktuelle laufende Abrechnungsperiode?
+    AppState -> HanAdapter : GetCurrentRegisterValues()
+    AppState <-- HanAdapter 
+end
+
+deactivate HanAdapter
+deactivate ProgressView
+
+AppState -> DataView
+deactivate AppState
+
+activate DataView
+
+@enduml
+
+

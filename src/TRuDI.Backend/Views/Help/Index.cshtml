@@ -1,0 +1,182 @@
+﻿@using TRuDI.Backend.Application
+@using TRuDI.Backend.Utils
+@using TRuDI.Models.BasicData
+@inject ApplicationState StateService
+@{
+    ViewData["Title"] = "Beschreibung und Glossar";
+}
+
+<div class="well">
+    <h3>Transparenz- und Display-Software (TRuDI)</h3>
+    <p>
+        Mit TRuDI (Transparenz- und Display-Software) stellt die Intitiative Bundesdisplay eine
+        herstellerübergreifende, standardisierte Visualisierungslösung bereit, die die Anforderungen
+        des MsbG (insbesondere §35, §62), der PTB-A50.8 erfüllt und die im Rahmen der Vorgaben des
+        Bundesamts für Sicherheit in der Informationstechnik nutzbar ist.
+    </p>
+
+    <p>
+        TRuDI bietet dabei eine Display Funktion, mit der Messwerte, die im SMGW vorhanden sind für den
+        Letztverbraucher angezeigt werden. Darüber hinaus steht eine sogenannte Transparenz Funktion zur Verfügung.
+        Im Rahmen dieses funktionalen Merkmals ist der Letztverbraucher mit Hilfe der Software in der Lage, Tarifrechnungen,
+        die auf Basis der Messwerte des SMGWs in der Systemlandschaft des Lieferanten durchgeführt hat lokal nachzuvollziehen
+        und damit seine Rechnung zu überprüfen.
+    </p>
+</div>
+
+
+
+<h3>Smart-Meter-Gateway</h3>
+
+<p>
+    In einem intelligenten Messsystem bildet die Kommunikationseinheit, das Smart Meter Gateway (SMGW) mit,
+    die zentrale Komponente, welche Messdaten von Zählern empfängt, speichert und diese für Marktakteure aufbereitet.
+</p>
+
+<h3>Messwert-Status</h3>
+
+<table class="table">
+    <tr>
+        <th>Icon</th>
+        <th>Kurztext</th>
+        <th>Status</th>
+        <th>Beschreibung</th>
+    </tr>
+
+    <tr>
+        <td><i class="@StatusPTB.NoError.ToStatusIcon()"></i></td>
+        <td>OK</td>
+        <td>0</td>
+        <td>Kein Fehler.</td>
+    </tr>
+
+    <tr>
+        <td><i class="@StatusPTB.Warning.ToStatusIcon()"></i></td>
+        <td>Warnung</td>
+        <td>1</td>
+        <td>Warnung, keine (eichrechtliche) Aktion notwendig, Messwert gültig.</td>
+    </tr>
+
+    <tr>
+        <td><i class="@StatusPTB.TemporaryError.ToStatusIcon()"></i></td>
+        <td>temp. Fehler</td>
+        <td>2</td>
+        <td>
+            Temporärer Fehler, gesendeter Messwert wird als ungültig gekennzeichnet, der Wert im Messwertfeld kann entsprechend
+            der "VDE-Anwendungsregel VDE-AR-N 4400:2011-09" bzw. "DVGW-Arbeitsblatt G685 Gasabrechnung, 11/2008"
+            im Backend als Ersatzwert verwendet werden.
+        </td>
+    </tr>
+
+    <tr>
+        <td><i class="@StatusPTB.CriticalTemporaryError.ToStatusIcon()"></i></td>
+        <td>kritischer temp. Fehler</td>
+        <td>3</td>
+        <td>
+            Kritischer temporärer Fehler, gesendeter Messwert ist ungültig, der im Messwertfeld enthaltene Wert kann im Backend nicht als
+            Ersatzwert verwendet werden.
+        </td>
+    </tr>
+
+    <tr>
+        <td><i class="@StatusPTB.FatalError.ToStatusIcon()"></i></td>
+        <td>fataler Fehler</td>
+        <td>4</td>
+        <td>Fataler Fehler (Zähler defekt), der aktuell gesendete und alle zukünftigen Messwerte sind ungültig.</td>
+    </tr>
+</table>
+
+<h3>Begriffe</h3>
+
+<ul>
+    <li>
+        <strong>SMGW, Smart-Meter-Gateway</strong>
+        <p>
+            Das Smart-Meter-Gateway is die zentrale Kommunikationseinheit eines intelligenten Messsystems, welches nach den Vorgaben
+            des Bundesamt für Sicherheit in der Informationstechnik entwickelt wurde.
+        </p>
+    </li>
+
+    <li>
+        <strong>Technische Richtlinie TR-03109</strong>
+        <p>
+            Die Technischen Richtlinie TR-03109 beinhaltet die funktionalen Anforderungen, die ein Smart-Meter-Gateway mindestens erfüllen muss.
+        </p>
+    </li>
+
+    <li>
+        <strong>Anwendungsregel AR2418-6</strong>
+        <p>
+            Für den Roll Out der intelligenten Messsysteme (iMSys) gemäß des Geseztes zur Digitalisierung der Energiewende wird eine gegen
+            Manipulation geschützte und eichrechtskonforme Anzeige der Verbrauchs- und Erzeugungsdaten für Zwecke der Rechnungsprüfung benötigt.
+            Mit Hilfe dieser sollen Letztverbraucher in die Lage versetzt werden, beweissichere Überprüfungen von Abrechnungen der Energieversorgungsunternehmen
+            vornehmen zu können. Zusätzlich soll dem Letztverbraucher die Möglichkeit gegeben werden, seine derzeitigen Verbrauchswerte abzurufen.
+            Diese Anwendungsregel beschreibt diese Thematik.
+        </p>
+    </li>
+
+    <li>
+        <strong>Smart Meter, Zähler</strong>
+        <p>
+            Ein Smart Meter ist ein intelligentes Messsystem, das aus zwei Elementen besteht: Einem digitalen Stromzähler und einem sogenannten Gateway,
+            das die Datenübertragung ermöglicht. Das intelligente Messsystem ermittelt den Stromverbrauch und speichert die Daten.
+        </p>
+    </li>
+
+    <li>
+        <strong>Messlokation</strong>
+        <p>
+            In der Energiewirtschaft wird der Punkt, an dem Versorgungsleistungen wie z.B. Elektrizität oder Erdgas an Verbraucher geleistet werden oder
+            von Erzeugern bezogen werden als Messlokation bezeichnet. Jeder Messlokation wird eine eindeutige Bezeichnung zugeordnet.
+        </p>
+    </li>
+
+    <li>
+        <strong>TAF, Tarifanwendungsfall</strong>
+        <p>
+            Das Bundesamt für Sicherheit in der Informationstechnik hat verschiedene Tarifanwendungsfälle für Tarifierung, Bilanzierung und
+            Netzzustandsdatenerhebung definiert, die als Minimalanforderung von SMGW durch Regelwerke umgesetz werden müssen. Es gibt aktuell
+            12 Tarifanwendungsfälle.
+        </p>
+    </li>
+
+    <li>
+        <strong>WAN, Wide Area Netz</strong>
+        <p>
+            Die WAN-Schnittstelle ist als IP-Schnittstelle ausgeführt. Aus Gründen der Sicherheit gehen sämtliche Kommunikationsverbindungen vom
+            Smart Meter Gateway aus. Diese können bei Bedarf oder zu festgelegten Zeitpunkten durch das Gateway etabliert werden. Um aber auch auf
+            spontane Ereignisse reagieren zu können, kann das Smart Meter Gateway über einen Wake-Up Dienst zu einem Verbindungsaufbau veranlasst werden.
+        </p>
+        <p>
+            Über die WAN-Schnittstelle ist das Smart Meter Gateway in eine Public-Key-Infrastruktur eingebunden und jegliche Kommunikation ist mit TLS verschlüsselt.
+        </p>
+    </li>
+
+    <li>
+        <strong>LMN, Lokales metrologisches Netz</strong>
+        <p>
+            Die LMN-Schnittstelle kann nach der Technischen Richtlinie sowohl als Nahbereichs-Funkschnittstelle (wireless Mbus) oder als serielle Schnittstelle ausgeführt sein.
+        </p>
+    </li>
+
+    <li>
+        <strong>HAN, Home Area Network</strong>
+        <p>
+            Home Area Networks sind Netzwerke, die in Smart Homes und in Heimbüros für die Vernetzung von Computern und deren Peripiheriegeräte sorgen. Ursprünglich hatte das
+            National Institute of Standards and Technology (NIST) Home Area Networks als ein reines Energie-Steuer-Netz im Rahmen der Smart Grids und des Smart Metering
+            definiert.
+        </p>
+    </li>
+
+    <li>
+        <strong>PKI, Public-Key-Infrastruktur</strong>
+        <p>
+            Mit Public-Key-Infrastruktur wird in der Kryptologie ein System bezeichnet, das digitale Zertifikate ausstellen, verteilen und prüfen kann. Die innerhalb einer PKI
+            ausgestellten Zertifikate werden zur Absicherung rechnergestützer Kommunikation verwendet.
+        </p>
+    </li>
+
+</ul>
+<a href="/BreadCrumb/ClosePage">Zurück</a>
+
+@await Html.PartialAsync("~/Views/DataView/_ExportDataDialog.cshtml")

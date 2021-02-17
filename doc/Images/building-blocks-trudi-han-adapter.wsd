@@ -1,0 +1,39 @@
+@startuml
+
+skinparam componentStyle uml2
+allow_mixing
+
+frame TRuDI.HanAdapter.* {
+
+    interface IHanAdapter {
+        Connect()
+        LoadAvailableContracts()
+        LoadData()
+        GetCurrentRegisterValues()
+        Disconnect()
+        SmgwImageViewComponent : View
+        ManufacturerParametersViewComponent : View
+    }
+    
+    class "TRuDI.HanAdapter.<<Name>>" as HanAdapter
+
+    IHanAdapter <|-- HanAdapter
+
+    component "Components.GatewayImageView" as GatewayImageView
+    component "Components.ManufacturerParametersView" as ManufacturerParametersView
+
+    HanAdapter --> GatewayImageView
+    HanAdapter --> ManufacturerParametersView
+}
+
+component "IVU.Http" as IvuHttp
+component "IVU.Common.Tls" as IvuCommonTls
+component "IVU.BouncyCastle.Crypto" as IvuBouncyCastleCrypto
+
+HanAdapter --> IvuHttp
+IvuHttp --> IvuCommonTls
+IvuCommonTls --> IvuBouncyCastleCrypto
+
+
+@enduml
+

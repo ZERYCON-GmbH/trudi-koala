@@ -1,0 +1,14 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp2.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\TRuDI.Models\TRuDI.Models.csproj" />
+    <ProjectReference Include="..\TRuDI.TafAdapter.Interface\TRuDI.TafAdapter.Interface.csproj" />
+    <ProjectReference Include="..\TRuDI.TafAdapter.Taf1\TRuDI.TafAdapter.Taf1.csproj" />
+    <ProjectReference Include="..\TRuDI.TafAdapter.Taf2\TRuDI.TafAdapter.Taf2.csproj" />
+  </ItemGroup>
+
+</Project>

@@ -1,0 +1,16 @@
+@startuml
+
+skinparam componentStyle uml2
+
+frame TRuDI {
+    component "TRuDI.Frontend\n(main.js)" as Frontend 
+    component "TRuDI.Backend" as Backend
+
+    note right of Frontend : Electron-Anwendung
+    note right of Backend : ASP.Net Core-Anwendung
+
+    Frontend --> Backend
+}
+
+@enduml
+

@@ -1,0 +1,113 @@
+﻿@using TRuDI.Backend.Utils
+@using TRuDI.Models
+@using TRuDI.Models.BasicData
+@model OriginalValueList
+
+<h3>Übersicht über fehlende Messwerte und Stati</h3>
+
+
+@{
+    var errorList = Model.GetErrorsList();
+}
+
+@if (!errorList.Any(e => e.HasErrors))
+{
+    <div>
+        Es wurden keine fehlenden Messwerte oder Messwerte mit Fehler-Status gefunden.
+    </div>
+}
+else
+{
+    <table class="table-condensed">
+        <tr>
+            <th>Tag</th>
+            <th>Status</th>
+            <th>Fehlende Messwerte</th>
+        </tr>
+        @foreach (var entry in errorList)
+        {
+            if (!entry.HasErrors)
+            {
+                continue;
+            }
+
+            var timestamp = entry.Timestamp;
+            if (timestamp < Model.Start)
+            {
+                timestamp = Model.Start.Value;
+            }
+
+            <tr>
+                <td style="vertical-align: top;"><a style="cursor: pointer;" onclick="selectOvlDay('@Model.GetOriginalValueListIdent()', moment('@timestamp.ToIso8601()'));">@entry.Timestamp.ToString("dd.MM.yyyy")</a></td>
+                <td style="vertical-align: top;">
+                    @if (entry.OkCount == entry.ValueCount)
+                    {
+                        <span></span>
+                    }
+                    else
+                    {
+                        if (entry.FatalErrorCount > 0)
+                        {
+                            <div>
+                                <span>
+                                    <i class="@StatusPTB.FatalError.ToStatusIcon()"></i>
+                                    @entry.FatalErrorCount @(StatusPTB.FatalError.GetStatusString(entry.FatalErrorCount))
+                                </span>
+                            </div>
+                        }
+
+                        if (entry.CriticalTempErrorCount > 0)
+                        {
+                            <div>
+                                <span>
+                                    <i class="@StatusPTB.CriticalTemporaryError.ToStatusIcon()"></i>
+                                    @(entry.CriticalTempErrorCount) @(StatusPTB.CriticalTemporaryError.GetStatusString(entry.CriticalTempErrorCount))
+                                </span>
+                            </div>
+                        }
+
+                        if (entry.TempErrorCount > 0)
+                        {
+                            <div>
+                                <span>
+                                    <i class="@StatusPTB.TemporaryError.ToStatusIcon()"></i>
+                                    @(entry.TempErrorCount) @(StatusPTB.TemporaryError.GetStatusString(entry.TempErrorCount))
+                                </span>
+                            </div>
+                        }
+
+                        if (entry.WarningCount > 0)
+                        {
+                            <div>
+                                <span>
+                                    <i class="@StatusPTB.Warning.ToStatusIcon()"></i>
+                                    @entry.WarningCount @(StatusPTB.Warning.GetStatusString(entry.WarningCount))
+                                </span>
+                            </div>
+                        }
+                    }
+                </td>
+
+                <td style="vertical-align: top;">
+                    @if (entry.GapCount == 0)
+                    {
+                        <text></text>
+                    }
+                    else
+                    {
+                        @entry.GapCount
+                        if (entry.GapCount > 1)
+                        {
+                            <text> Werte</text>
+                        }
+                        else
+                        {
+                            <text> Wert</text>
+                        }
+                    }
+                </td>
+            </tr>
+        }
+
+    </table>
+}

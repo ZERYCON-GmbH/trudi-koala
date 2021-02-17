@@ -1,0 +1,12 @@
+﻿@model ConnectData
+@{
+    ViewData["Title"] = "Verbindung wird aufgebaut...";
+}
+
+<h1>Gerätespezifische Parameter</h1>
+
+<form method="post" asp-controller="Home" asp-action="ConnectWithManufacturerParameters">
+    @await Component.InvokeAsync(ViewData["ManufacturerParametersViewName"].ToString(), new { deviceId = Model.DeviceId })
+
+    <Button type="submit" class="btn btn-primary">Verbinden</Button>
+</form>

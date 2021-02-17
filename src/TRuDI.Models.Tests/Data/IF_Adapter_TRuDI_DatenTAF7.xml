@@ -1,0 +1,210 @@
+﻿<?xml version='1.0' encoding='UTF-8'?>
+<UsagePoints 
+             xmlns="http://vde.de/AR_2418-6.xsd" 
+             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+             xsi:schemaLocation="http://vde.de/AR_2418-6.xsd AR_2418-6.xsd" 
+             xmlns:espi="http://naesb.org/espi" 
+             xmlns:atom="http://www.w3.org/2005/Atom">
+	<UsagePoint>
+		<espi:ServiceCategory>
+			<espi:kind>0</espi:kind>
+		</espi:ServiceCategory>
+	
+        <!-- MesspunktID -->
+		<usagePointId>DE00000000000000000000000000000001</usagePointId>
+		
+		<Customer>
+            <!-- 
+            ObjectID des Letztverbrauchers, dem die die Daten zugeordnet werden
+            (Cosem Logical Device ohne .sm)
+            ! Das ist nicht der Anmeldename des Letztverbrauchers 
+            -->
+			<customerId>userID-001</customerId>
+		</Customer>
+
+        <InvoicingParty>
+            <!-- 
+            Platzhalter BDEW Kennung des Lieferanten 
+            Der Wert wird durch den GWA in der Konfiguration eines Tarifprofiles
+            hinterlegt. Für das SMGw ist der Wert transparent, da nicht benutzt.
+            -->
+			<invoicingPartyId>EMT-BDEW</invoicingPartyId>
+		</InvoicingParty>
+
+		<SMGW>
+			<certId>1</certId>
+			<smgwId>DNT0017055173</smgwId>
+		</SMGW>
+
+		<Certificate>
+            <!-- 
+            Zertifikat, dass für die Inhaltsdatensignierung benutzt
+            wurde
+            -->
+			<certId>1</certId>
+			<certType>3</certType>
+			<certContent>00112233FF</certContent>
+		</Certificate>
+ 		
+        <!-- 
+        Das Feld wird durch den GWA mit in das Auswertungsprofil gespeichert
+		und hier transparent ausgegeben. Es dient zur Identifikation des Tarifes.
+        -->
+		<tariffName>HT/NT Tarif</tariffName>
+		
+        <!-- 
+        Log-Einträge des Letztverbraucher Protokolls im Abfragezeitraum
+        werden durch das mehrfache Verwenden des Elementes <LogEntry>
+        dargestellt
+        
+        HINWEIS:
+        Im Adapter oder im SMGw sollte der Abfragezeitraum so gestaltet werden,
+        dass eventuelle Protokolleinträge über den Versandzeit mit ausgegeben
+        werden. Im Beispiel liegt der Versandzeitpunkt 20 Sekunden nach der
+        Aufzeichnung.
+        -->
+        <LogEntry>
+            <recordNumber>92869</recordNumber>		
+			<LogEvent>	
+                <!-- 1 = INFO -->
+				<level>1</level>
+                <!-- Text der Log Meldung -->
+				<text>Aufzeichnung (EDNT0116909060[11-002,1.5.2238].-.ev7c.-[0A01454D48000051971E]) Empfangsfenster mit Messwert geschlossen</text>
+                <!-- 0 = SUCCESS -->
+				<outcome>0</outcome>
+                <!-- Zeitpunkt -->
+                <timestamp>2017-06-26T11:30:01+02:00</timestamp>
+			</LogEvent>	
+		</LogEntry>
+        <LogEntry>
+		    <recordNumber>92873</recordNumber>
+			<LogEvent>	
+				<level>1</level>
+				<text>versendete Daten (EDNT0116909060[11-002,1.5.2238].-.ev7c.OML[0A01454D48000051971E] >> emtLinks7781) Datensatz[9756] abrechnungsrelevant: 2017-06-26T11:30:00+02:00/2017-06-26T11:30:00+02:00 (1049860): 1971-07-18T22:16:10+01:00[1-0:1.8.0*255]=639108*10^-1 Wh</text>
+				<outcome>0</outcome>
+                <timestamp>2017-06-26T11:31:20+02:00</timestamp>
+			</LogEvent>			
+		</LogEntry>
+        <LogEntry>
+            <recordNumber>92877</recordNumber>		
+			<LogEvent>	
+				<level>1</level>
+				<text>Aufzeichnung (EDNT0116909060[11-002,1.5.2238].-.ev7c.-[0A01454D48000051971E]) Empfangsfenster mit Messwert geschlossen</text>
+				<outcome>0</outcome>
+                <timestamp>2017-06-26T11:45:01+02:00</timestamp>
+			</LogEvent>
+        </LogEntry>
+		<LogEntry>
+		    <recordNumber>92881</recordNumber>
+			<LogEvent>	
+				<level>1</level>              
+				<text>versendete Daten (EDNT0116909060[11-002,1.5.2238].-.ev7c.OML[0A01454D48000051971E] >> emtLinks7781) Datensatz[9756] abrechnungsrelevant: 2017-06-26T11:45:00+02:00/2017-06-26T11:45:00+02:00 (1049860): 1971-07-18T22:31:10+01:00[1-0:1.8.0*255]=639118*10^-1 Wh</text>
+				<outcome>0</outcome>
+                <timestamp>2017-06-26T11:46:20+02:00</timestamp>
+			</LogEvent>			
+		</LogEntry>
+	    <LogEntry>
+            <recordNumber>92885</recordNumber>		
+			<LogEvent>	
+				<level>1</level>
+				<text>Aufzeichnung (EDNT0116909060[11-002,1.5.2238].-.ev7c.-[0A01454D48000051971E]) Empfangsfenster mit Messwert geschlossen</text>
+				<outcome>0</outcome>
+                <timestamp>2017-06-26T12:45:01+02:00</timestamp>
+			</LogEvent>
+        </LogEntry>
+		<LogEntry>
+		    <recordNumber>92889</recordNumber>
+			<LogEvent>	
+				<level>1</level>              
+				<text>versendete Daten (EDNT0116909060[11-002,1.5.2238].-.ev7c.OML[0A01454D48000051971E] >> emtLinks7781) Datensatz[9756] abrechnungsrelevant: 2017-06-26T11:45:00+02:00/2017-06-26T11:45:00+02:00 (1049860): 1971-07-18T22:31:10+01:00[1-0:1.8.0*255]=639118*10^-1 Wh</text>
+				<outcome>0</outcome>
+                <timestamp>2017-06-26T12:46:20+02:00</timestamp>
+			</LogEvent>			
+		</LogEntry>
+		
+		<MeterReading>
+            <!-- 
+            aufgezeichneter Zähler
+            -->
+			<Meter>
+				<meterId>0A01454D48000051971E</meterId>
+			</Meter>
+			
+            <!-- 
+            AR-V095:
+            Die meterReadingId identifiziert eine Messwertliste eindeutig. Die ID kann 
+            zum Beispiel aus der Zählpunktbezeichnung, der Gerätenummer und der OBIS-Kennziffer 
+            zusammengesetzt werden.
+            Im Beispiel ist die MesspunktID verwendet worden
+            -->
+			<meterReadingId>DE00000000000000000000000000000001</meterReadingId>
+			
+            <!-- 
+            Der Zähler hat Wh aufgezeichnet
+            -->
+			<ReadingType>
+				<espi:powerOfTenMultiplier>0</espi:powerOfTenMultiplier>
+				<espi:uom>72</espi:uom>
+				<scaler>-1</scaler>
+                <!-- 
+                1-0:1.8.0*255 wird aufgezeichnet
+                -->
+				<obisCode>0100010800ff</obisCode>
+                <!-- 
+				Cosem-Definition: <OBIS>.<Meter-ID>.sm
+				Im TAF-7 handelt es sich im eine Originäre Messwerteliste
+                -->
+				<qualifiedLogicalName>0100010800ff.0A01454D48000051971E.sm</qualifiedLogicalName>
+			</ReadingType>
+			
+			<IntervalBlock>
+                <!-- 
+                Das Abfrageinterval beginnt um 11:30:00 und endet um 12:00:00
+				Dadurch sind drei Messwert in der abgefragten Liste.
+				(von einschließlich bis einschließlich)
+                -->
+				<interval>
+					<duration>2700</duration>
+					<start>2017-06-26T11:30:00+02:00</start>
+				</interval>
+
+                <!-- Messwert 11:30:00: 63910,8 Wh -->
+				<IntervalReading>
+					<espi:value>639108</espi:value>			
+					<timePeriod>
+						<duration>0</duration>
+						<start>2017-06-26T11:30:00+02:00</start>
+					</timePeriod>
+                    <!-- Statuswort mach FNN -->
+                    <!-- SMGW-Status und Zählerstatus in HEX Notation-->
+					<statusFNN>0000010500100504</statusFNN>
+                    <!-- PTB Teil des Statuswortes -->
+					<statusPTB>0</statusPTB>
+				</IntervalReading>
+
+                <!-- Messwert 11:45:00: 63911,8 Wh -->
+				<IntervalReading>
+					<espi:value>639118</espi:value>			
+					<timePeriod>
+						<duration>0</duration>
+						<start>2017-06-26T11:45:00+02:00</start>
+					</timePeriod>
+					<statusFNN>0000010500100504</statusFNN>
+					<statusPTB>0</statusPTB>
+				</IntervalReading>
+
+				<!-- Messwert 12:00:00: 63912,8 Wh -->
+				<IntervalReading>
+					<espi:value>639128</espi:value>			
+					<timePeriod>
+						<duration>0</duration>
+						<start>2017-06-26T12:00:00+02:00</start>
+					</timePeriod>
+					<statusFNN>0000010500100504</statusFNN>
+					<statusPTB>0</statusPTB>
+				</IntervalReading>
+				
+			</IntervalBlock>						
+		</MeterReading>	
+	</UsagePoint>
+</UsagePoints>

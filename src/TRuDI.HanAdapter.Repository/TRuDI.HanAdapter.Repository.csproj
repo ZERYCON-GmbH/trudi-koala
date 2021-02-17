@@ -1,0 +1,25 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp2.0</TargetFramework>
+    <RestoreSources>$(RestoreSources);../../private-packages;https://api.nuget.org/v3/index.json</RestoreSources>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="TRuDI.HanAdapter.Discovergy" Version="1.0.0" />
+	<PackageReference Include="TRuDI.HanAdapter.DrNeuhaus" Version="1.0.27" />
+    <PackageReference Include="TRuDI.HanAdapter.Kiwigrid" Version="2.0.1" />
+    <PackageReference Include="TRuDI.HanAdapter.LandisGyr" Version="1.0.10" />
+    <PackageReference Include="TRuDI.HanAdapter.Ppc" Version="1.0.33" />
+    <PackageReference Include="TRuDI.HanAdapter.ThebenAG" Version="1.0.6" />
+    <PackageReference Include="TRuDI.HanAdapter.Efr" Version="1.0.2" />
+	<PackageReference Include="TRuDI.HanAdapter.Emh" Version="1.0.13" />
+  </ItemGroup>
+  
+  <ItemGroup>
+    <ProjectReference Include="..\TRuDI.HanAdapter.Example\TRuDI.HanAdapter.Example.csproj" />
+    <ProjectReference Include="..\TRuDI.HanAdapter.Interface\TRuDI.HanAdapter.Interface.csproj" />
+    <ProjectReference Include="..\TRuDI.Models\TRuDI.Models.csproj" />
+  </ItemGroup>
+
+</Project>

@@ -1,0 +1,746 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+=====================================================================================================
+VDE AR 2418-6
+=====================================================================================================
+XSD schema definition for interfaces IF_Adapter_TRuDI and IF_Lieferant_TRuDI
+
+Schema:  AR_2418-6.xsd
+Version: 1.4 (Entwurf)     
+Author:  OFFIS, Dr. Martin Kahmann (PTB), Dominik Weingardt (EnBW), Thomas Müller (IVU)
+=====================================================================================================
+
+
+Change History
+______________________________________________________
+
+v0.95 - 29.08.2016 - OFFIS & M. Kahmann - Initial definition of interface if_3d_con 
+v0.96 - 17.05.2017 - D. Weingardt - Adaption & changes for interfaces IF_Adapter_TRuDI and IF_Lieferant_TRuDI according to ZVEI meeting from 12.05.2017
+v0.97 - 18.05.2017 - D. Weingardt - Necessary changes for interface IF_Lieferant_TRuDI
+v0.98 - 08.06.2017 - D. Weingardt - Adaption & changes for interface IF_Adapter_TRuDI according to AK BD meetings from 23.05.2017 and 02.06.2017
+v0.99 - 09.06.2017 - D. Weingardt - Minor corrections and merge with if_3d_con v1.0 XSD from OFFIS
+v1.0  - 14.06.2017 - D. Weingardt - Minor corrections for interface IF_Adapter_TRuDI according to AK BD meeting from 14.06.2017
+v1.1  - 05.12.2017 - IVU - Neue optionale Elemente "measurementPeriod" (ReadingType) und "targetTime" (IntervalReading) aufgenommen.
+v1.2  - 27.07.2018 - IVU - customerId und invoicingPartyId auf 64 Zeichen erweitert. 
+                         - Das Element Certificate darf nun beliebig oft vorkommen.
+                         - FirmwareComponent (SMGW) als optinales Element aufgenommen.
+                         - measurementTimeMeter (IntervalReading) als optinales Element aufgenommen.
+                         - LogEvent: Element subjectIdentity: Typ von uint32 geändert zu String256
+                         - LogEvent: neue Elemente aufgenommen: destination, userIdentity, eventKindVendor
+                         - LogEvent: Elemente evidence: Typ von espi:HexBinary128 geändert zu xs:hexBinary
+                         - IntervalReading: Element signature: Typ von espi:String512 zu xs:hexBinary geändert
+                         - GeneratorVersion (String256) aufgenommen
+                         - Datentyp von dayId in DayProfile, SpecialDayProfile und WeekProfile String256 geändert
+                         - Datentyp von tariffId auf String64 geändert
+v1.3  - 23.05.2019 - IVU - String8192 durch String16384 ersetzt (wird für Meldungstexte verwendet)
+v1.4  - 11.07.2019 - IVU - usagePointId von String64 auf String256 geändert
+
+ NOTICE
+______________________________________________________
+This product is a derivative work based on the 
+        NAESB REQ.21 Energy Service Provider Interface Standard  
+        Version 1.0
+        Copyright 2011 NAESB
+The NAESB schema may be purchased from NAESB at:
+  http://www.naesb.org/misc/naesb_matl_order_espi_standards.pdf
+All NAESB Standards are protected under United States Copyright laws. The same copyright protection applies to much of the other materials published by NAESB. The penalties for copyright infringement may be found here. 
+Derivative work products of NAESB standards as defined by the United States Copyright Act 17 U.S.C. § 101 and are permissible given that the work product is significantly different – substantial and material. Work products based upon NAESB standards or schemas included in NAESB standards are not considered derivative if they simply include additional software libraries or are considered an enhanced version of the original. In order for a work product to be considered significantly different there should be substantial and material modifications to the source coding. To ensure that a work is understood to be derivative and not in violation of the NAESB copyright policy, an entity should discuss its use with NAESB. 
+The NAESB Copyright Policy may be found here http://www.naesb.org/pdf2/copyright.pdf. 
+The NAESB Intellectual Property Rights Policy Concerning Contributions and Comments may be found here http://www.naesb.org/pdf4/naesb_ipr_policy.doc. 
+______________________________________________________
+END NOTICE
+______________________________________________________
+-->
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns="http://vde.de/AR_2418-6.xsd" xmlns:espi="http://naesb.org/espi" xmlns:atom="http://www.w3.org/2005/Atom" targetNamespace="http://vde.de/AR_2418-6.xsd" elementFormDefault="qualified" attributeFormDefault="unqualified">
+	<xs:import namespace="http://naesb.org/espi" schemaLocation="espi_derived.xsd"/>
+	<!-- InvoiceValidation-->
+	<xs:element name="UsagePoints" type="Usagepoints"/>
+	<xs:complexType name="Usagepoints">
+		<xs:complexContent>
+			<xs:extension base="espi:Object">
+				<xs:sequence>
+				  <xs:element name="GeneratorVersion" type="espi:String256" minOccurs="0"/>
+          <xs:element name="UsagePoint" type="UsagePointExtension" maxOccurs="unbounded"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="AnalysisProfile">
+		<xs:complexContent>
+			<xs:extension base="espi:Object">
+				<xs:sequence>
+					<!-- Change: Element "tariffUseCase" aus dem Element "TariffStage" eine Ebene nach oben geholt (v0.97, 18.05.2017) -->
+					<!-- Change: Elemente "tariffUseCase" und "tariffId" analog if_3d_con v1.0 nach vorne gezogen (v0.99, 09.06.2017) -->
+					<xs:element name="tariffUseCase" type="espi:UInt16"/>
+					<xs:element name="tariffId" type="espi:String64"/>
+					<xs:element name="description" type="espi:String256" minOccurs="0"/>
+					<!-- Change: Element "billingPeriod" von Datentyp "espi:DateTimeInterval" auf "DateTimeInterval" angepasst (v0.98, 08.06.2017) -->
+					<xs:element name="billingPeriod" type="DateTimeInterval"/>
+					<xs:element name="TariffStage" type="TariffStage" maxOccurs="unbounded"/>
+					<xs:element name="defaultTariffNumber" type="espi:UInt16"/>
+					<xs:element name="TariffChangeTrigger" type="TariffChangeTrigger" minOccurs="0" maxOccurs="unbounded"/>
+					<xs:element name="RuleSystem" type="RuleSystem" minOccurs="0"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="TariffStage">
+		<xs:complexContent>
+			<xs:extension base="espi:Object">
+				<xs:sequence>
+					<xs:element name="tariffNumber" type="espi:UInt16"/>
+					<!-- Change: Element "tariffUseCase" aus dem Element "TariffStage" eine Ebene nach oben geholt (v0.97, 18.05.2017) -->
+					<!-- <xs:element name="tariffUseCase" type="espi:UInt16"/> -->
+					<xs:element name="description" type="espi:String256" minOccurs="0"/>
+					<!-- Change: Element "DatetimePeriod" auf optional geändert (v0.97, 18.05.2017) -->
+					<xs:element name="DatetimePeriod" type="DatetimePeriod" minOccurs="0"/>
+					<xs:element name="MinMaxCounter" type="MinMaxCounter" minOccurs="0" maxOccurs="2"/>
+					<xs:element name="obisCode" type="espi:String32"/>
+					<xs:element name="Prepaid" type="Prepaid" minOccurs="0"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="Customer">
+		<xs:complexContent>
+			<xs:extension base="espi:Object">
+				<xs:sequence>
+					<!-- Info: Element "customerId" soll die Letztverbraucher-ID enthalten (v0.96, 16.05.2017) -->
+					<xs:element name="customerId" type="espi:String64"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="InvoicingParty">
+		<xs:complexContent>
+			<xs:extension base="espi:Object">
+				<xs:sequence>
+					<xs:element name="invoicingPartyId" type="espi:String64"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="SMGW">
+		<xs:complexContent>
+			<xs:extension base="espi:Object">
+				<xs:sequence>
+					<!-- INFO: Für die zum SMGW gehörenden Zertifikate wird über "certId" eine entsprechende Referenz erzeugt (v0.96, 17.05.2017) -->
+					<!-- Change: Element "certId"auf unbounded gestellt (v0.96, 17.05.2017) -->
+					<xs:element name="certId" type="espi:UInt8" minOccurs="0" maxOccurs="unbounded"/>
+					<xs:element name="smgwId" type="espi:String32"/>
+					<!-- Change: Elemente "Manufacturer", "FirmwareVersion" und "SystemTime" optional aufgenommen (v0.96, 16.05.2017) -->
+					<xs:element name="Manufacturer" type="espi:String32" minOccurs="0"/>
+					<xs:element name="FirmwareVersion" type="espi:String64" minOccurs="0"/>
+				  <xs:element name="FirmwareComponent" type="FirmwareComponent" minOccurs="0" maxOccurs="unbounded"/>
+					<!-- Change: Element "SystemTime"auf von Datentyp "espi:TimeType" auf "xs:dateTime" angepasst (v0.98, 08.06.2017) -->
+					<xs:element name="SystemTime" type="xs:dateTime" minOccurs="0"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+  <!-- Change: neues Object VendorConfig aufgenommen (v1.2, 26.07.2018) -->
+  <xs:complexType name="VendorConfig">
+    <xs:complexContent>
+      <xs:extension base="espi:Object">
+        <xs:sequence>
+          <xs:element name="tafProfile" type="xs:hexBinary" minOccurs="0"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:complexType name="FirmwareComponent">
+    <xs:complexContent>
+      <xs:extension base="espi:Object">
+        <xs:sequence>
+          <xs:element name="name" type="espi:String64" minOccurs="1"/>
+          <xs:element name="version" type="espi:String256" minOccurs="0"/>
+          <xs:element name="checksum" type="espi:String256" minOccurs="0"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+	<xs:complexType name="Certificate">
+		<xs:complexContent>
+			<xs:extension base="espi:Object">
+				<xs:sequence>
+					<xs:element name="certId" type="espi:UInt8"/>
+					<!-- Change: Elemente "certType" mandatory und "parentCertId" optional aufgenommen (v0.96, 16.05.2017) -->
+					<xs:element name="certType" type="espi:UInt8">
+						<xs:annotation>
+							<xs:documentation>1=SMGW SIG Certificate (from SM-PKI)
+2=SubCA Certificate (from SM-PKI)
+3=SMGW HAN Certificate
+							</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="parentCertId" type="espi:UInt8" minOccurs="0"/>
+					<!-- Change: Elemente "cSig" in "certContent" umbenannt (v0.96, 16.05.2017) -->
+					<xs:element name="certContent" type="xs:hexBinary"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="LogEntry">
+		<xs:complexContent>
+			<xs:extension base="espi:Object">
+				<xs:sequence>
+					<xs:element name="parentRecordNumber" type="espi:UInt32" minOccurs="0"/>
+					<xs:element name="recordNumber" type="espi:UInt32" minOccurs="0"/>
+					<xs:element name="repetitionCounter" type="espi:UInt32" minOccurs="0"/>
+					<xs:element name="LogEvent" type="LogEvent" minOccurs="0" maxOccurs="unbounded"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="MeterType">
+		<xs:complexContent>
+			<xs:extension base="espi:Object">
+				<xs:sequence>
+					<!-- Info: Element "meterId" soll die Basiszähler-ID (wie aufgedruckt) enthalten (v0.96, 16.05.2017) -->
+					<xs:element name="meterId" type="espi:String64"/>
+					<xs:element name="publicKey" type="xs:hexBinary" minOccurs="0"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="RuleSystem">
+		<xs:complexContent>
+			<xs:extension base="espi:Object">
+				<xs:sequence>
+					<xs:element name="rules" type="xs:anyURI"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="Evis">
+		<xs:complexContent>
+			<xs:extension base="espi:Object">
+				<xs:sequence>
+					<xs:element name="deviceType" type="espi:UInt8" minOccurs="0"/>
+					<xs:element name="eventId" type="espi:UInt32" minOccurs="0"/>
+					<xs:element name="eventSubId" type="espi:UInt32" minOccurs="0"/>
+					<xs:element name="function" type="espi:UInt8" minOccurs="0"/>
+					<xs:element name="length" type="espi:UInt8" minOccurs="0"/>
+					<xs:element name="module" type="espi:UInt8" minOccurs="0"/>
+					<xs:element name="vendorId" type="espi:String32" minOccurs="0"/>
+					<xs:element name="version" type="espi:UInt8" minOccurs="0"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="MessageExtensionsType">
+		<xs:complexContent>
+			<xs:extension base="espi:Object">
+				<xs:sequence>
+					<xs:element name="id" type="espi:UInt8"/>
+					<xs:element name="text" type="xs:string"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="DatetimePeriod">
+		<xs:complexContent>
+			<xs:extension base="espi:Object">
+				<xs:choice>
+					<!-- Change: Element "datetimeInterval" von Datentyp "espi:DateTimeInterval" auf "DateTimeInterval" angepasst (v0.98, 08.06.2017) -->
+					<xs:element name="datetimeInterval" type="DateTimeInterval"/>
+					<!-- Change: Element "datetimeVar" auf von Datentyp "espi:TimeType" auf "xs:dateTime" angepasst (v0.98, 08.06.2017) -->
+					<xs:element name="datetimeVar" type="xs:dateTime"/>
+				</xs:choice>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="SeasonProfile">
+		<xs:complexContent>
+			<xs:extension base="espi:Object">
+				<xs:sequence>
+					<xs:element name="seasonProfileName" type="espi:String32"/>
+					<!-- Change: Element "seasonStart" auf von Datentyp "espi:TimeType" auf "xs:dateTime" angepasst (v0.98, 08.06.2017) -->
+					<xs:element name="seasonStart" type="xs:dateTime"/>
+					<xs:element name="weekProfileName" type="espi:String32"/>
+					<xs:element name="WeekProfile" type="WeekProfile"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="WeekProfile">
+		<xs:complexContent>
+			<xs:extension base="espi:Object">
+				<xs:sequence>
+					<xs:element name="weekProfileName" type="espi:String32"/>
+					<xs:element name="monday" type="espi:String256" minOccurs="0"/>
+					<xs:element name="tuesday" type="espi:String256" minOccurs="0"/>
+					<xs:element name="wednesday" type="espi:String256" minOccurs="0"/>
+					<xs:element name="thursday" type="espi:String256" minOccurs="0"/>
+					<xs:element name="friday" type="espi:String256" minOccurs="0"/>
+					<xs:element name="saturday" type="espi:String256" minOccurs="0"/>
+					<xs:element name="sunday" type="espi:String256" minOccurs="0"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="SpecialDayProfile">
+		<xs:complexContent>
+			<xs:extension base="espi:Object">
+				<xs:sequence>
+					<xs:element name="specialDayDate" type="DayVarType"/>
+					<xs:element name="dayId" type="espi:String256"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="DayTimeProfile">
+		<xs:complexContent>
+			<xs:extension base="espi:Object">
+				<xs:sequence>
+					<xs:element name="startTime" type="TimeVarType"/>
+					<!-- Change: Elemente "tariffStage" analog if_3d_con v1.0 in "tariffNumber" umbenannt (v0.99, 09.06.2017) -->
+					<xs:element name="tariffNumber" type="espi:UInt16"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="TimeVarType">
+		<xs:complexContent>
+			<xs:extension base="espi:Object">
+				<xs:sequence>
+					<xs:element name="hour" type="espi:UInt8" minOccurs="0"/>
+					<xs:element name="minute" type="espi:UInt8" minOccurs="0"/>
+					<xs:element name="second" type="espi:UInt8" minOccurs="0"/>
+					<xs:element name="hundreds" type="espi:UInt8" minOccurs="0"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="DayVarType">
+		<xs:complexContent>
+			<xs:extension base="espi:Object">
+				<xs:sequence>
+					<!-- Change: Datentyp für Element "year" auf 16bit geändert (v0.97, 18.05.2017) -->
+					<xs:element name="year" type="espi:UInt16" minOccurs="0"/>
+					<xs:element name="month" type="espi:UInt8" minOccurs="0"/>
+					<xs:element name="day_of_week" type="espi:UInt8" minOccurs="0"/>
+					<xs:element name="day_of_month" type="espi:UInt8" minOccurs="0"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="ExternalEvent">
+		<xs:complexContent>
+			<xs:extension base="espi:Object">
+				<xs:sequence>
+					<xs:element name="eventId" type="espi:UInt32"/>
+					<!-- Change: Element "eventPeriod" von Datentyp "espi:DateTimeInterval" auf "DateTimeInterval" angepasst (v0.98, 08.06.2017) -->
+					<xs:element name="eventPeriod" type="DateTimeInterval"/>
+					<!-- Change: Elemente "tariffNumber" analog if_3d_con v1.0 mandatory aufgenommen (v0.99, 09.06.2017) -->
+					<xs:element name="tariffNumber" type="espi:UInt16" minOccurs="1" maxOccurs="1"/>
+					<xs:element name="Threshold" type="Threshold" minOccurs="0" maxOccurs="2"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="Prepaid">
+		<xs:complexContent>
+			<xs:extension base="espi:Object">
+				<xs:sequence>
+					<xs:element name="availableEnergy" type="espi:UInt32"/>
+					<xs:element name="powerOfTenMultiplier" type="espi:UnitMultiplierKind"/>
+					<!-- Change: Element "toleranceInterval" von Datentyp "espi:DateTimeInterval" auf "DateTimeInterval" angepasst (v0.98, 08.06.2017) -->
+					<xs:element name="toleranceInterval" type="DateTimeInterval"/>
+					<xs:element name="uom" type="espi:UnitSymbolKind"/>
+					<xs:element name="Breaker" type="Breaker" minOccurs="0" maxOccurs="unbounded"/>
+					<xs:element name="ThresholdTrigger" type="ThresholdTrigger" minOccurs="0" maxOccurs="unbounded"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="DayProfile">
+		<xs:complexContent>
+			<xs:extension base="espi:Object">
+				<xs:sequence>
+					<xs:element name="dayId" type="espi:String256" maxOccurs="unbounded"/>
+					<xs:element name="DayTimeProfile" type="DayTimeProfile" maxOccurs="unbounded"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="ThresholdLimit">
+		<xs:complexContent>
+			<xs:extension base="espi:Object">
+				<xs:sequence>
+					<xs:element name="powerOfTenMultiplier" type="espi:UnitMultiplierKind"/>
+					<xs:element name="uom" type="espi:UnitSymbolKind"/>
+					<xs:element name="value" type="espi:UInt48"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="ScalerUnit">
+		<xs:complexContent>
+			<xs:extension base="espi:Object">
+				<xs:sequence>
+					<xs:element name="scaler" type="espi:UInt8"/>
+					<xs:element name="unit" type="espi:UInt8"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="Threshold">
+		<xs:complexContent>
+			<xs:extension base="espi:Object">
+				<xs:annotation>
+					<xs:documentation>direction is a boolean value
+</xs:documentation>
+				</xs:annotation>
+				<xs:sequence>
+					<xs:element name="direction" type="espi:UInt8" minOccurs="0"/>
+					<xs:element name="overLimit" type="ThresholdLimit"/>
+					<xs:element name="underLimit" type="ThresholdLimit"/>
+					<!-- Change: Element "qualifiedLogicalName" analog if_3d_con v1.0 durch "meterReadingId" ersetzt (v0.99, 09.06.2017) -->
+					<xs:element name="meterReadingId" type="espi:String256"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="LogEvent">
+		<xs:complexContent>
+			<xs:extension base="espi:Object">
+				<xs:sequence>
+				  <!-- Change: Element "evidence": Typ von "espi:HexBinary128" geändert zu "xs:hexBinary" (v1.2, 27.07.2018) -->
+					<xs:element name="evidence" type="xs:hexBinary" minOccurs="0"/>
+					<xs:element name="type" type="Evis" minOccurs="0"/>
+					<xs:element name="level" type="espi:UInt8" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation>1=INFO
+2=WARNING
+3=ERROR
+4=FATAL
+5=EXTENSION</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="messageExtensions" type="espi:String256" minOccurs="0"/>
+					<!-- Change: Neues Element "text" optional aufgenommen (v0.98, 08.06.2017) -->
+					<xs:element name="text" type="String16384" minOccurs="0"/>
+					<xs:element name="outcome" type="espi:UInt8" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation>0=SUCCESS
+1=FAILURE
+2=EXTENSION</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="secondsIndex" type="espi:UInt32" minOccurs="0"/>
+				  <!-- Change: Element "subjectIdentity" Typ geändert von espi:UInt32 zu espi:String256 (v1.2, 27.07.2018) -->
+					<xs:element name="subjectIdentity" type="espi:String256" minOccurs="0"/>
+					<!-- Change: Element "timestamp" auf von Datentyp "espi:TimeType" auf "xs:dateTime" angepasst (v0.98, 08.06.2017) -->
+					<xs:element name="timestamp" type="xs:dateTime" minOccurs="0"/>
+				  <!-- Change: Element "destination" optional aufgenommen (v1.2, 27.07.2018) -->
+				  <xs:element name="destination" type="espi:String256" minOccurs="0"/>
+				  <!-- Change: Element "userIdentity" optional aufgenommen (v1.2, 27.07.2018) -->
+				  <xs:element name="userIdentity" type="espi:String256" minOccurs="0"/>
+				  <!-- Change: Element "eventKindVendor" optional aufgenommen (v1.2, 27.07.2018) -->
+				  <xs:element name="eventKindVendor" type="espi:String256" minOccurs="0"/>
+        </xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="TariffChangeTrigger">
+		<xs:complexContent>
+			<xs:extension base="espi:Object">
+				<xs:choice>
+					<xs:element name="ThresholdTrigger" type="ThresholdTrigger" minOccurs="0"/>
+					<xs:element name="TimeTrigger" type="TimeTrigger" minOccurs="0"/>
+					<xs:element name="ExternalEventTrigger" type="ExternalEventTrigger" minOccurs="0"/>
+				</xs:choice>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="TimeTrigger">
+		<xs:complexContent>
+			<xs:extension base="espi:Object">
+				<xs:sequence>
+					<xs:element name="DayProfile" type="DayProfile" maxOccurs="unbounded"/>
+					<xs:element name="SeasonProfile" type="SeasonProfile" minOccurs="0" maxOccurs="unbounded"/>
+					<xs:element name="WeekProfile" type="WeekProfile" minOccurs="0" maxOccurs="unbounded"/>
+					<xs:element name="SpecialDayProfile" type="SpecialDayProfile" minOccurs="0" maxOccurs="unbounded"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="ThresholdTrigger">
+		<xs:complexContent>
+			<xs:extension base="espi:Object">
+				<xs:sequence>
+					<xs:element name="Threshold" type="Threshold"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="ExternalEventTrigger">
+		<xs:complexContent>
+			<xs:extension base="espi:Object">
+				<xs:sequence>
+					<xs:element name="ExternalEvent" type="ExternalEvent"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="MinMaxCounter">
+		<xs:annotation>
+			<xs:documentation>maxCounter is a boolean value
+</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="espi:Object">
+				<xs:sequence>
+					<xs:element name="count" type="espi:UInt32"/>
+					<xs:element name="maxCounter" type="espi:UInt8"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="CO2Indicator">
+		<xs:complexContent>
+			<xs:extension base="espi:Object">
+				<xs:sequence>
+					<xs:element name="value" type="espi:UInt48" minOccurs="0"/>
+					<xs:element name="powerOfTenMultiplier" type="espi:UnitMultiplierKind" minOccurs="0"/>
+					<xs:element name="uoi" type="espi:UnitSymbolKind" minOccurs="0"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="Operand1">
+		<xs:complexContent>
+			<xs:extension base="espi:Object">
+				<xs:sequence>
+					<!-- Change: Element "qualifiedLogicalName" analog if_3d_con v1.0 durch "meterReadingId" ersetzt (v0.99, 09.06.2017) -->
+					<xs:element name="meterReadingId" type="espi:String256"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="Operand2">
+		<xs:complexContent>
+			<xs:extension base="espi:Object">
+				<xs:sequence>
+					<!-- Change: Element "qualifiedLogicalName" analog if_3d_con v1.0 durch "meterReadingId" ersetzt (v0.99, 09.06.2017) -->
+					<xs:element name="meterReadingId" type="espi:String256"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="Operator">
+		<xs:annotation>
+			<xs:documentation>
+				Indicates the used mathematical operator. 
+
+1 - addition
+2 - substraction
+3 - division
+4 - multiplication
+</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="espi:Object">
+				<xs:sequence>
+					<xs:element name="operator" type="espi:UInt8"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="MathOperation">
+		<xs:complexContent>
+			<xs:extension base="espi:Object">
+				<xs:sequence>
+					<xs:element name="Operand1" type="Operand1"/>
+					<xs:element name="Operator" type="Operator"/>
+					<xs:element name="Operand2" type="Operand2"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="Breaker">
+		<xs:complexContent>
+			<xs:extension base="espi:Object">
+				<xs:sequence>
+					<xs:element name="breakerId" type="espi:String64"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:element name="UsagePoint" type="UsagePointExtension"/>
+	<xs:complexType name="UsagePointExtension">
+		<xs:complexContent>
+			<xs:extension base="espi:UsagePoint">
+				<xs:sequence>
+					<xs:element name="usagePointId" type="espi:String256" minOccurs="0"/>
+					<xs:element name="Customer" type="Customer" minOccurs="0"/>
+					<xs:element name="InvoicingParty" type="InvoicingParty" minOccurs="0"/>
+					<xs:element name="SMGW" type="SMGW" minOccurs="0"/>
+				  <xs:element name="VendorConfig" type="VendorConfig" minOccurs="0"/>
+					<xs:element name="Certificate" type="Certificate" minOccurs="0" maxOccurs="unbounded"/>
+					<!-- Change: Neues Element "tariffName" optional aufgenommen (v0.98, 07.06.2017) -->
+					<xs:element name="tariffName" type="espi:String256" minOccurs="0"/>
+					<xs:element name="MathOperation" type="MathOperation" minOccurs="0"/>
+					<xs:element name="AnalysisProfile" type="AnalysisProfile" minOccurs="0"/>
+					<xs:element name="LogEntry" type="LogEntry" minOccurs="0" maxOccurs="unbounded"/>
+					<!-- Change: Auskommentiertes Element "MeterReading" wieder aufgenommen (v0.96, 16.05.2017) -->
+					<xs:element name="MeterReading" type="MeterReadingExtension" minOccurs="0" maxOccurs="unbounded"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="MeterReadingExtension">
+		<xs:complexContent>
+			<xs:extension base="espi:MeterReading">
+				<xs:sequence>
+					<xs:element name="Meter" type="MeterType" minOccurs="0"/>
+					<xs:element name="CO2Indicator" type="CO2Indicator" minOccurs="0"/>
+					<xs:element name="meterReadingId" type="espi:String256" minOccurs="0"/>
+					<!-- Change: Auskommentierte Elemente "ReadingType" und "IntervalBlock" wieder aufgenommen (v0.96, 16.05.2017) -->
+					<xs:element name="ReadingType" type="ReadingTypeExtension" minOccurs="0" maxOccurs="1"/>
+					<xs:element name="IntervalBlock" type="IntervalBlockExtension" minOccurs="0" maxOccurs="unbounded"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="IntervalReadingExtension">
+		<xs:complexContent>
+			<xs:extension base="espi:IntervalReading">
+				<xs:sequence>
+					<!-- Change: Element "timePeriod" in Extension aufgenommen, da im ESPI-Schema der Datentyp "espi:DateTimeInterval" verwendet wird, wir jedoch auf "DateTimeInterval" nutzen (v0.98, 08.06.2017) -->
+					<!-- Info: Dieses Element "timePeriod" ist anstelle des vererbten Elements "espi:timePeriod" zu verwenden (v0.99, 09.06.2017) -->
+					<xs:element name="timePeriod" type="DateTimeInterval" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation>The date time and duration of a reading. If not specified, readings for each “intervalLength” in ReadingType are present.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+          <!-- Change: Element "targetTime" hinzugefügt (v1.1, 05.12.2017) -->
+				  <xs:element name="targetTime" type="xs:dateTime" minOccurs="0"/>
+				  <!-- Change: Element "measurementTimeMeter" hinzugefügt (v1.2, 27.07.2018) -->
+				  <xs:element name="measurementTimeMeter" type="xs:dateTime" minOccurs="0"/>
+          <xs:element name="certId" type="espi:UInt8" minOccurs="0"/>
+					<!-- Change: Elemente "meterSig" und "signature" analog if_3d_con v1.0 von Datentyp "String256" auf "String512" angepasst (v0.99, 09.06.2017) -->
+				  <!-- Change: Elemente "meterSig" und "signature" analog if_3d_con v1.0 von Datentyp "String512" auf "xs:hexBinary" angepasst (v1.2, 27.07.2018) -->
+					<xs:element name="meterSig" type="xs:hexBinary" minOccurs="0"/>
+					<xs:element name="signature" type="xs:hexBinary" minOccurs="0"/>
+					<!-- Change: Element "status" in "statusFNN" umbenannt (v1.0, 14.06.2017) -->
+					<xs:element name="statusFNN" type="espi:String256" minOccurs="0"/>
+					<!-- Change: Neues Element "statusPTB" optional aufgenommen (v1.0, 14.06.2017) -->
+					<xs:element name="statusPTB" type="espi:UInt8" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation>0 = Kein Fehler
+1 = Warnung, keine (eichrechtliche) Aktion notwendig, Messwert gültig.
+2 = Temporärer Fehler, gesendeter Messwert wird als ungültig gekennzeichnet, der Wert im Messwertfeld kann entsprechend den Regeln [VDE4400] bzw. [G685] im Backend als Er-satzwert verwendet werden.
+3 = Temporärer Fehler, gesendeter Messwert ist ungültig, der im Messwertfeld enthaltene Wert kann im Backend nicht als Ersatzwert verwendet werden.
+4 = Fataler Fehler (Zähler defekt), der aktuell gesendete und alle zukünftigen Messwerte sind ungültig.
+							</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+				  <!-- Change: Neues Element "statusVendor" optional aufgenommen (v1.2, 26.07.2018) -->
+				  <!-- Info: Dient dem Transport von Status-Informationen für die Signaturprüfung, falls diese nicht zurück aus statusPTB oder statusFNN ermittelt werden können. -->
+				  <xs:element name="statusVendor" type="espi:String256" minOccurs="0"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="ReadingTypeExtension">
+		<xs:complexContent>
+			<xs:extension base="espi:ReadingType">
+				<xs:sequence>
+					<xs:element name="converterFactor" type="espi:UInt16" minOccurs="0"/>
+					<!-- Change: Neues Element "scaler" mandatory zur Ermöglichung von Nachkommastellen beim Wert aufgenommen (v0.96, 17.05.2017) -->
+					<!-- Change: Element "scaler" auf optional geändert (v0.99, 09.06.2017) -->
+					<!-- Info: Ist das Element "scaler" nicht gesetzt, so findet keine Kommaverschiebung beim Wert statt (v0.99, 09.06.2017) -->
+					<xs:element name="scaler" type="espi:Int16" minOccurs="0"/>
+					<xs:element name="obisCode" type="espi:String32" minOccurs="0"/>
+					<xs:element name="qualifiedLogicalName" type="espi:String256" minOccurs="0"/>
+					<xs:element name="description" type="espi:String256" minOccurs="0"/>
+				  <!-- Change: Neues Element "measurementPeriod" (optional) um Probleme bei der Messperioden-Ermittlung aus der Werteliste zu umgehen. Ist in Sekunden anzugeben (v1.1, 05.12.2017) -->
+          <xs:element name="measurementPeriod" type="espi:UInt32" minOccurs="0"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="IntervalBlockExtension">
+		<xs:annotation>
+			<xs:documentation>Time sequence of Readings of the same ReadingType.</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="espi:IdentifiedObject">
+				<xs:sequence>
+					<!-- Change: Element "interval" von Datentyp "espi:DateTimeInterval" auf "DateTimeInterval" angepasst (v0.98, 08.06.2017) -->
+					<xs:element name="interval" type="DateTimeInterval" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation>Specifies the time period during which the contained readings were taken.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="IntervalReading" type="IntervalReadingExtension" minOccurs="0" maxOccurs="unbounded"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<!-- Change: Neuer simpleType "String8192" zur Darstellung der Log-Meldungen aufgenommen (v0.98, 08.06.2017) -->
+  <!-- Change: Erweitert auf "String16384", da 8192 Zeichen ggf. nicht ausreichen -->
+	<xs:simpleType name="String16384">
+		<xs:annotation>
+			<xs:documentation>[extension] Character string of max length 16384</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:maxLength value="16384"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<!-- Change: Neuer complexType "DateTimeInterval" zur Umstellung aller Zeitstempel auf "xs:dateTime" aufgenommen (v0.98, 08.06.2017) -->
+	<xs:complexType name="DateTimeInterval">
+		<xs:annotation>
+			<xs:documentation>Interval of date and time. End is not included because it can be derived from the start and the duration.</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="espi:Object">
+				<xs:sequence>
+					<xs:element name="duration" type="espi:UInt32" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation>[correction] Duration of the interval, in seconds.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="start" type="xs:dateTime" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation>[correction] Date and time that this interval started.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:element name="ApplicationInformation" type="espi:ApplicationInformation"/>
+	<xs:element name="Authorization" type="espi:Authorization"/>
+	<xs:element name="IntervalBlock" type="IntervalBlockExtension"/>
+	<xs:element name="IntervalReading" type="IntervalReadingExtension"/>
+	<xs:element name="MeterReading" type="MeterReadingExtension"/>
+	<xs:element name="ReadingQuality" type="espi:ReadingQuality"/>
+	<xs:element name="ReadingType" type="ReadingTypeExtension"/>
+	<xs:element name="IdentifiedObject" type="espi:IdentifiedObject"/>
+	<xs:element name="ServiceCategory" type="espi:ServiceCategory"/>
+	<xs:element name="ElectricPowerQualitySummary" type="espi:ElectricPowerQualitySummary"/>
+	<xs:element name="ElectricPowerUsageSummary" type="espi:ElectricPowerUsageSummary"/>
+	<xs:element name="AccumulationBehaviourType" type="espi:AccumulationKind"/>
+	<xs:element name="CommodityType" type="espi:CommodityKind"/>
+	<xs:element name="ConsumptionTierType" type="espi:UInt16"/>
+	<xs:element name="CurrencyCode" type="espi:Currency"/>
+	<xs:element name="DataQualifierType" type="espi:DataQualifierKind"/>
+	<!-- Change: Element "DateTimeInterval" von Datentyp "espi:DateTimeInterval" auf "DateTimeInterval" angepasst (v0.98, 08.06.2017) -->
+	<xs:element name="DateTimeInterval" type="DateTimeInterval"/>
+	<xs:element name="FlowDirectionType" type="espi:FlowDirectionKind"/>
+	<xs:element name="KindType" type="espi:MeasurementKind"/>
+	<xs:element name="PhaseCode" type="espi:PhaseCodeKind"/>
+	<xs:element name="QualityOfReading" type="espi:QualityOfReading"/>
+	<xs:element name="ServiceKind" type="espi:ServiceKind"/>
+	<xs:element name="TimeAttributeType" type="espi:TimePeriodOfInterest"/>
+	<xs:element name="TOUType" type="espi:UInt16"/>
+	<xs:element name="UnitSymbolKind" type="espi:UnitSymbolKind"/>
+	<xs:element name="SummaryMeasurement" type="espi:SummaryMeasurement"/>
+	<xs:element name="BatchItemInfo" type="espi:BatchItemInfo"/>
+	<xs:element name="Object" type="espi:Object"/>
+	<xs:element name="ServiceStatus" type="espi:ServiceStatus"/>
+	<!--<xs:element name="Subscription" type="espi:Subscription"/>-->
+</xs:schema>

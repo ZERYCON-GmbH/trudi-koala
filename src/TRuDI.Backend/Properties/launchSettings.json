@@ -1,0 +1,21 @@
+{
+  "iisSettings": {
+    "windowsAuthentication": false,
+    "anonymousAuthentication": true,
+    "iisExpress": {
+      "applicationUrl": "http://localhost:1931/",
+      "sslPort": 0
+    }
+  },
+  "profiles": {
+    "TRuDI.Backend": {
+      "commandName": "Project",
+      "commandLineArgs": "--loglevel=verbose",
+      "launchBrowser": true,
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development"
+      },
+      "applicationUrl": "http://localhost:5000/"
+    }
+  }
+}

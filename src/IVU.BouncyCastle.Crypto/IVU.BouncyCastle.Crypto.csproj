@@ -1,0 +1,23 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFrameworks>netcoreapp2.0</TargetFrameworks>
+    <Version>2.1.1</Version>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <Authors />
+    <Company>IVU Softwareentwicklung GmbH</Company>
+    <Description>Fork of https://github.com/bcgit/bc-csharp: Added BrainPool curves.</Description>
+    <PackageOutputPath>..\..\private-packages</PackageOutputPath>
+    <AssemblyVersion>2.1.1.0</AssemblyVersion>
+    <FileVersion>2.1.1.0</FileVersion>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|netcoreapp2.0|AnyCPU'">
+    <NoWarn>1701;1702;1705;3021;0618;0672</NoWarn>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|netcoreapp2.0|AnyCPU'">
+    <NoWarn>1701;1702;1705;3021;0618;0672</NoWarn>
+  </PropertyGroup>
+
+</Project>

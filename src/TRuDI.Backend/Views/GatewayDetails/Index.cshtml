@@ -1,0 +1,92 @@
+﻿@using System.Security.Cryptography.X509Certificates
+@using TRuDI.Backend.Application
+@using TRuDI.Backend.Utils;
+@inject ApplicationState StateService
+@{
+    ViewData["Title"] = "Details zum Smart Meter Gateway";
+}
+
+
+<div class="panel panel-primary">
+    <div class="panel-heading">Firmware-Version</div>
+    <div class="panel-body">
+
+        @if (StateService?.CurrentDataResult?.Model?.Smgw.FirmwareComponents != null && StateService?.CurrentDataResult?.Model?.Smgw.FirmwareComponents.Count != 0)
+        {
+            <table class="table">
+                <tr>
+                    <th>Komponente</th>
+                    <th>Version/Prüfsumme</th>
+                </tr>
+                @foreach (var versionItem in StateService?.CurrentDataResult?.Model?.Smgw.FirmwareComponents)
+                {
+                    <tr>
+                        <td>
+                            @versionItem.Name
+                        </td>
+                        <td>
+                            <div>
+                                @versionItem.Version
+                            </div>
+                            @if (!string.IsNullOrWhiteSpace(versionItem.Checksum))
+                            {
+                                <div style="font-family: monospace; word-break: break-all;">
+                                    @versionItem.Checksum
+                                </div>
+                            }
+                        </td>
+                    </tr>
+                }
+
+            </table>
+        }
+        else if (StateService.LastConnectResult?.FirmwareVersions != null)
+        {
+            <table class="table">
+                <tr>
+                    <th>Komponente</th>
+                    <th>Version/Prüfsumme</th>
+                </tr>
+                @foreach (var versionItem in StateService.LastConnectResult.FirmwareVersions)
+                {
+                    <tr>
+                        <td>
+                            @versionItem.Component
+                        </td>
+                        <td>
+                            <div>
+                                @versionItem.Version
+                            </div>
+                            @if (!string.IsNullOrWhiteSpace(versionItem.Hash))
+                            {
+                                <div style="font-family: monospace; word-break: break-all;">
+                                    @versionItem.Hash
+                                </div>
+                            }
+                        </td>
+                    </tr>
+                }
+
+            </table>
+        }
+        else
+        {
+            <div>Es sind keine Informationen zum Smart Meter Gateway verfügbar.</div>
+        }
+
+    </div>
+</div>
+
+@if (StateService.LastConnectResult?.Certificate != null)
+{
+    <div class="panel panel-primary">
+        <div class="panel-heading">Zertifikat der TLS-Verbindung</div>
+        <div class="panel-body">
+            @await Component.InvokeAsync("CertDetailsView", new { cert = StateService.LastConnectResult?.Certificate })
+        </div>
+    </div>
+}
+
+<a href="/BreadCrumb/ClosePage">Zurück</a>
+
+@await Html.PartialAsync("~/Views/DataView/_ExportDataDialog.cshtml")

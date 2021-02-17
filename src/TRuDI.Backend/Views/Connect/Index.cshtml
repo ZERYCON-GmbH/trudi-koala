@@ -1,0 +1,328 @@
+﻿@using System
+@using Microsoft.AspNetCore.Mvc.ViewFeatures
+@using TRuDI.Backend.Application
+@using TRuDI.HanAdapter.Repository
+@model ConnectData
+@inject ApplicationState StateService
+@{
+    ViewData["Title"] = "Daten laden";
+}
+
+<div>
+    <ul class="nav nav-tabs" role="tablist">
+        <li role="presentation" class="active"><a href="#loadFromGateway" aria-controls="loadFromGateway" role="tab" data-toggle="tab">Aus Smart Meter Gateway laden</a></li>
+        <li role="presentation"><a href="#loadFromFile" aria-controls="loadFromFile" role="tab" data-toggle="tab">Aus Datei laden</a></li>
+    </ul>
+
+    <div class="tab-content">
+        <div role="tabpanel" class="tab-pane active" id="loadFromGateway">
+
+            <form id="connectForm" enctype="multipart/form-data" method="post" asp-controller="Connect" asp-action="Connect">
+                <div class="panel panel-primary">
+                    <div class="panel-heading">Anmeldung am Smart Meter Gateway</div>
+                    <div class="panel-body">
+
+                        <div class="form-group">
+                            <label>
+                                <input type="radio" asp-for="AuthMode" value="UserPassword" id="user-auth"> Benutzername und Passwort
+                            </label>
+                        </div>
+
+                        <div id="panel-user-auth" style="display: none;">
+                            <div class="form-group">
+                                <label for="Username">Benutzername:</label>
+                                <input class="form-control" asp-for="Username" />
+                            </div>
+
+                            <div class="form-group">
+                                <label for="Password">Passwort:</label>
+                                <input class="form-control" type="password" asp-for="Password" />
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label>
+                                <input type="radio" asp-for="AuthMode" value="ClientCertificate" id="cert-auth"> Zertifikat
+                            </label>
+                        </div>
+
+                        <div id="panel-cert-auth" style="display: none;">
+
+                            <div class="form-group">
+                                <label>Client-Zertifikat:</label>
+                                <input type="file" id="certFileLoader" accept="application/x-pkcs12" style="display:none" onchange="onCertSelected();" />
+
+                                <div>
+                                    <button type="button" class="btn btn-default" id="btnUpload" onclick="openfileDialogCert();">Zertifikat auswählen...</button>
+
+                                    <div id="cert-details">
+                                        @if (Model.AuthMode == AuthMode.ClientCertificate && StateService.ClientCert != null)
+                                        {
+                                            switch (StateService.ClientCert.PasswordState)
+                                            {
+                                                case CertPasswordState.PasswordValid:
+                                                case CertPasswordState.WithoutPassword:
+                                                    @await Html.PartialAsync("_CertWithoutPasswordPartial", StateService.ClientCert, new ViewDataDictionary(ViewData));
+                                                    break;
+
+                                                case CertPasswordState.InvalidPassword:
+                                                    @await Html.PartialAsync("_CertPasswordInputPartial", StateService.ClientCert, new ViewDataDictionary(ViewData));
+                                                    break;
+
+                                                case CertPasswordState.InvalidCertFile:
+                                                    @await Html.PartialAsync("_CertInvalidFilePartial", StateService.ClientCert, new ViewDataDictionary(ViewData));
+                                                    break;
+
+                                                case CertPasswordState.NoCertSelected:
+                                                    break;
+                                            }
+                                        }
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="panel panel-primary">
+                    <div class="panel-heading">Verbindungsparameter</div>
+                    <div class="panel-body">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label asp-for="DeviceId">Identifikationsnummer:</label>
+                                    @if (StateService.OperationMode == OperationMode.DisplayFunction || string.IsNullOrWhiteSpace(Model.DeviceId))
+                                    {
+                                        <input class="form-control" asp-for="DeviceId" placeholder="z.B. EABC0112345678" />
+                                    }
+                                    else
+                                    {
+                                        <input class="form-control" asp-for="DeviceId" disabled />
+                                        <input type="hidden" asp-for="DeviceId" />
+                                    }
+                                </div>
+
+                                <div class="form-group">
+                                    <label asp-for="Address">IP-Adresse:</label>
+                                    <input class="form-control" asp-for="Address" placeholder="z.B. 192.168.1.200" />
+                                </div>
+
+                                <div class="form-group">
+                                    <label asp-for="Port">Port:</label>
+                                    <input class="form-control" asp-for="Port" />
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <p>Die Identifikationnummer ist sichtbar auf das Smart Meter Gateway aufgedruckt. Das Schema kann dem Handbuch zum Smart Meter Gateway entnommen werden.</p>
+                                <p>Falls die IP-Adresse oder der Port nicht bekannt sind, wenden Sie sich an Ihren zuständigen Messstellenbetreiber.</p>
+                                <p>Achtung: Es muss ggf. auch die Netzwerkkonfiguration des PCs angepasst werden!</p>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+                <div id="manufacturer-parameters">
+                    @if (StateService?.ActiveHanAdapter?.ManufacturerParametersView != null)
+                    {
+                        @await Html.PartialAsync("_ManufacturerParametersFormPartial", Model.DeviceId, new ViewDataDictionary(ViewData) { { "ManufacturerParametersViewName", StateService?.ActiveHanAdapter?.ManufacturerParametersView } });
+                    }
+                    else
+                    {
+                        @await Html.PartialAsync("_ManufacturerParametersFormEmptyPartial", Model.DeviceId, new ViewDataDictionary(ViewData) { { "ManufacturerParametersViewName", string.Empty } });
+                    }
+                </div>
+
+                <button type="submit" class="btn btn-primary" id="connectButton">Verbinden</button>
+
+            </form>
+        </div>
+
+        <div role="tabpanel" class="tab-pane" id="loadFromFile">
+            <form id="xmlFileForm">
+                <div class="panel panel-primary">
+                    <div class="panel-heading">Datei laden</div>
+                    <div class="panel-body">
+                        <p>
+                            Sie können aus dem Smart Meter Gateway die abgerufenen Daten in eine Datei speichern und zu einem
+                            späteren Zeitpunkt hier wieder laden.
+                        </p>
+                        <div class="form-group">
+                            <button type="button" class="btn btn-default" id="btnXmlUpload" onclick="openfileDialogXml();">Datei auswählen...</button>
+                            <input type="file" id="xmlFileLoader" accept="application/xml" style="display: none" onchange="onXmlSelected();" />
+                            <div id="xmlFileErrors"></div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+</div>
+
+
+<script language="javascript" type="text/javascript">
+    var currentDeviceId = "";
+
+    $(document).ready(function () {
+        $("#connectForm").submit(function () {
+            if ($("#connectForm").valid()) {
+                $("#connectButton").attr("disabled", true);
+                return true;
+            }
+
+            return false;
+        });
+
+        $.validator.addMethod(
+            "dinDeviceId",
+            function (value, element) {
+
+                value = value.trim().toUpperCase();
+
+                if (/^([0-9E]{1})\s*([A-Z]{3})\s*([0-9]{2})\s*([0-9]{8})$/.test(value)) {
+
+                    var match = /^([0-9E]{1})\s*([A-Z]{3})\s*([0-9]{2})\s*([0-9]{8})$/.exec(value);
+                    var flagIds = new Array(@Html.Raw(string.Join(",", HanAdapterRepository.AvailableAdapters.Select(a => $"'{a.FlagId}'"))));
+
+                    if ($.inArray(match[2], flagIds) === -1) {
+                        return false;
+                    }
+
+                    if (currentDeviceId !== value) {
+                        currentDeviceId = value;
+
+                        $('#manufacturer-parameters').load(
+                            '@Url.Action("ManufacturerConnectForm", "Connect")',
+                        { deviceId: value });
+
+                    }
+                    return true;
+                }
+
+                return false;
+            },
+            "Ungültige Identifikationsnummer"
+        );
+
+        $.validator.addMethod(
+            "ipAddressValidator",
+            function (value, element) {
+                var ip = /^(25[0-5]|2[0-4][0-9]|[0-1][0-9]{2}|[0-9]{2}|[0-9])(\.(25[0-5]|2[0-4][0-9]|[0-1][0-9]{2}|[0-9]{2}|[0-9])){3}$/;
+                return value.trim().match(ip);
+            },
+            "Ungültige IP-Adresse"
+        );
+
+        $.validator.addMethod(
+            "portRangeValidator",
+            function (value, element) {
+                if (value >= 1 && value <= 65535) {
+                    return true;
+                }
+
+                return false;
+            },
+            "Ungültiger Port"
+        );
+
+        $("#connectForm").validate({
+            rules: {
+                DeviceId: {
+                    dinDeviceId: true,
+                },
+
+                Address: {
+                    ipAddressValidator: true,
+                },
+
+                Port: {
+                    portRangeValidator: true,
+                },
+            }
+        });
+
+        $("#user-auth").change(function (data) {
+            console.log("user-auth: " + data);
+            $("#panel-user-auth").show();
+            $("#panel-cert-auth").hide();
+        });
+
+        $("#cert-auth").change(function (data) {
+            console.log("cert-auth: " + data);
+            $("#panel-cert-auth").show();
+            $("#panel-user-auth").hide();
+        });
+
+        $("#panel-user-auth").hide();
+        $("#panel-cert-auth").hide();
+
+        if ($("#user-auth").prop("checked")) {
+            $("#panel-user-auth").show();
+        }
+
+        if ($("#cert-auth").prop("checked")) {
+            $("#panel-cert-auth").show();
+        }
+    });
+
+    function onCertSelected()
+    {
+        var fileUpload = $("#certFileLoader").get(0);
+        var files = fileUpload.files;
+        var fileData = new FormData();
+
+        for (var i = 0; i < files.length; i++)
+        {
+            fileData.append(files[i].name, files[i]);
+        }
+
+        $.ajax({
+            url: '/Connect/UploadClientCert',
+            type: "POST",
+            contentType: false,
+            processData: false,
+            data: fileData,
+            success: function (result) {
+                $("#cert-details").html(result);
+                $("#cert-password-input").focus();
+            },
+            error: function (err) {
+                alert(err.statusText);
+            }
+        });
+    }
+
+    function openfileDialogCert() {
+        $("#certFileLoader").click();
+    }
+
+    function openfileDialogXml() {
+        $("#xmlFileLoader").click();
+    }
+
+    function onXmlSelected() {
+        var fileUpload = $("#xmlFileLoader").get(0);
+        var files = fileUpload.files;
+        var fileData = new FormData();
+
+        for (var i = 0; i < files.length; i++) {
+            fileData.append(files[i].name, files[i]);
+        }
+
+        $.ajax({
+            url: '/Connect/UploadXmlFile',
+            type: "POST",
+            contentType: false,
+            processData: false,
+            data: fileData,
+            success: function (result) {
+                // $("#xmlFileForm").reset();
+                window.location.href = "/DataView";
+            },
+            error: function (err) {
+                window.location.href = "/ValidationError";
+            }
+        });
+    }
+</script>

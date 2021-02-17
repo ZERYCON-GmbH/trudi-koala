@@ -1,0 +1,205 @@
+﻿@using TRuDI.Backend.Application
+@using TRuDI.Backend.Utils
+@using TRuDI.HanAdapter.Repository
+@using TRuDI.TafAdapter.Repository
+@inject ApplicationState StateService
+@{
+    ViewData["Title"] = "Über TRuDI";
+}
+
+<div class="panel panel-primary">
+    <div class="panel-heading">TRuDI</div>
+    <div class="panel-body">
+
+        <p>
+            <strong>Transparenz- und Display-Software (TRuDI)</strong><br />
+            Version @Microsoft.Extensions.PlatformAbstractions.PlatformServices.Default.Application.ApplicationVersion
+        </p>
+
+        <p style="margin-bottom: 2em;">
+            Arbeitskreis Bundesdisplay
+        </p>
+
+        <table class="table">
+            <tr>
+                <th>Komponente</th>
+                <th>RIPEMD-160-Prüfsummen</th>
+            </tr>
+
+            @foreach (var item in StateService.BackendChecksums.Items)
+            {
+                <tr>
+                    <td>@item.Filename</td>
+                    <td style="font-family: monospace;" id="@item.Filename">
+                        @if (item.Digest == null)
+                        {
+                            <text>Wird berechnet...</text>
+                        }
+                        else
+                        {
+                            @item.Digest
+                        }
+                    </td>
+                </tr>
+            }
+
+        </table>
+    </div>
+</div>
+
+<div class="panel panel-primary">
+    <div class="panel-heading">HAN Adapter</div>
+    <div class="panel-body">
+
+        <table class="table">
+            <tr>
+                <th>Hersteller</th>
+                <th>FLAG-Id</th>
+                <th>Adapter</th>
+                <th>Version</th>
+                <th>RIPEMD-160-Prüfsumme</th>
+            </tr>
+
+            @foreach (var adapter in HanAdapterRepository.AvailableAdapters)
+            {
+                <tr>
+                    <td>
+                        @adapter.ManufacturerName
+                    </td>
+
+                    <td>
+                        @adapter.FlagId
+                    </td>
+
+                    <td>
+                        @adapter.Assembly.GetName().Name
+                    </td>
+
+                    <td>
+                        @adapter.Assembly.GetName().Version
+                    </td>
+
+                    <td style="font-family: monospace;" id="@(adapter.Assembly.GetName().Name + "_" + adapter.ManufacturerName)">
+                        @if (adapter.Hash == null)
+                        {
+                            <text>Wird berechnet...</text>
+                        }
+                        else
+                        {
+                            @adapter.Hash
+                        }
+                    </td>
+                </tr>
+            }
+
+        </table>
+
+    </div>
+</div>
+
+<div class="panel panel-primary">
+    <div class="panel-heading">TAF Adapter</div>
+    <div class="panel-body">
+        <table class="table">
+            <tr>
+                <th>TAF</th>
+                <th>Adapter</th>
+                <th>Version</th>
+                <th>RIPEMD-160-Prüfsumme</th>
+            </tr>
+
+            @foreach (var adapter in TafAdapterRepository.AvailableAdapters)
+            {
+                <tr>
+                    <td>
+                        @adapter.TafId.TafToFriendlyName()
+                    </td>
+
+                    <td>
+                        @adapter.Assembly.GetName().Name
+                    </td>
+
+                    <td>
+                        @adapter.Assembly.GetName().Version
+                    </td>
+
+                    <td style="font-family: monospace;" id="@adapter.Assembly.GetName().Name">
+                        @if (adapter.Hash == null)
+                        {
+                            <text>Wird berechnet...</text>
+                        }
+                        else
+                        {
+                            @adapter.Hash
+                        }
+                    </td>
+                </tr>
+            }
+
+        </table>
+
+    </div>
+</div>
+
+<div class="panel panel-primary">
+    <div class="panel-heading">Lizenz</div>
+    <div class="panel-body">
+        <p>Copyright (c) Arbeitskreis Bundesdisplay</p>
+
+        <p>
+            Hiermit wird unentgeltlich jeder Person, die eine Kopie der Software und der zugehörigen Dokumentationen (die "Software") erhält,
+            die Erlaubnis erteilt, sie uneingeschränkt zu nutzen, inklusive und ohne Ausnahme mit dem Recht, sie zu verwenden, zu kopieren,
+            zu verändern, zusammenzufügen, zu veröffentlichen, zu verbreiten, zu unterlizenzieren und/oder zu verkaufen, und Personen,
+            denen diese Software überlassen wird, diese Rechte zu verschaffen, unter den folgenden Bedingungen:
+        </p>
+
+        <p>
+            Der obige Urheberrechtsvermerk und dieser Erlaubnisvermerk sind in allen Kopien oder Teilkopien der Software beizulegen.
+        </p>
+
+        <p>
+            DIE SOFTWARE WIRD OHNE JEDE AUSDRÜCKLICHE ODER IMPLIZIERTE GARANTIE BEREITGESTELLT, EINSCHLIEẞLICH DER GARANTIE ZUR BENUTZUNG FÜR
+            DEN VORGESEHENEN ODER EINEM BESTIMMTEN ZWECK SOWIE JEGLICHER RECHTSVERLETZUNG, JEDOCH NICHT DARAUF BESCHRÄNKT. IN KEINEM FALL SIND
+            DIE AUTOREN ODER COPYRIGHTINHABER FÜR JEGLICHEN SCHADEN ODER SONSTIGE ANSPRÜCHE HAFTBAR ZU MACHEN, OB INFOLGE DER ERFÜLLUNG EINES
+            VERTRAGES, EINES DELIKTES ODER ANDERS IM ZUSAMMENHANG MIT DER SOFTWARE ODER SONSTIGER VERWENDUNG DER SOFTWARE ENTSTANDEN.
+        </p>
+    </div>
+</div>
+
+<a href="/BreadCrumb/ClosePage">Zurück</a>
+
+<script language="javascript" type="text/javascript">
+    $(document).ready(function () {
+        var interval = setInterval(function () { updateDigest() }, 300);
+
+        function updateDigest() {
+            $.ajax({
+                url: '/About/GetDigestItems',
+                type: "GET",
+                contentType: false,
+                processData: false,
+                success: function (result) {
+                    console.log(result);
+
+                    var unprocessedItems = 0;
+                    for (var i = 0; i < result.length; i++) {
+                        if (result[i].digest) {
+                            document.getElementById(result[i].filename).innerHTML = result[i].digest;
+                        } else {
+                            unprocessedItems++;
+                        }
+                    }
+
+                    if (unprocessedItems === 0) {
+                        clearInterval(interval);
+                    }
+                },
+                error: function (err) { }
+            });
+        }
+
+        updateDigest();
+    });
+</script>
+
+@await Html.PartialAsync("~/Views/DataView/_ExportDataDialog.cshtml")

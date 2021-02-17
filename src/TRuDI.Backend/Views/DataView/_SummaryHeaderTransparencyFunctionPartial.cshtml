@@ -1,0 +1,50 @@
+﻿@using TRuDI.Backend.Application
+@using TRuDI.Backend.Utils
+@using TRuDI.Models
+@using TRuDI.Models.BasicData
+@inject ApplicationState StateService
+@{
+    var data = StateService.CurrentSupplierFile.Model;
+    var tariffData = StateService.CurrentSupplierFile.TafData.Data;
+    var deviceData = StateService.CurrentDataResult.Model;
+}
+
+<table class="table">
+    <tr>
+        <th>ID des Kunden</th>
+        <th>ID des Rechnungsstellers</th>
+        <th>Tarifbezeichnung</th>
+    </tr>
+
+    <tr>
+        <td>@deviceData?.Customer?.CustomerId</td>
+        <td>@data?.InvoicingParty?.InvoicingPartyId</td>
+        <td>@data?.TariffName</td>
+    </tr>
+
+    <tr>
+        <th>Startzeitpunkt</th>
+        <th>Endzeitpunkt</th>
+        <th>Tarifanwendungsfall</th>
+    </tr>
+
+    <tr>
+        <td>@tariffData.Begin.ToFormatedString()</td>
+        <td>@tariffData.End.ToFormatedString()</td>
+        <td>@StateService.CurrentSupplierFile?.TafId.TafToFriendlyName() (berechnet auf Basis eines Zählerstandsgangs)</td>
+    </tr>
+
+    <tr>
+        <th>Smart Meter Gateway</th>
+        <th></th>
+        <th>Energieart</th>
+    </tr>
+
+    <tr>
+        <td>@StateService.CurrentDataResult.Model.Smgw.SmgwId.ToFormattedDeviceId()</td>
+        <td></td>
+        <td>@StateService.CurrentDataResult.Model.ServiceCategory.Kind.ToServiceCategoryString()</td>
+    </tr>
+</table>
+
+@await Component.InvokeAsync(StateService.CurrentSupplierFile.TafData.SummaryView.Name)

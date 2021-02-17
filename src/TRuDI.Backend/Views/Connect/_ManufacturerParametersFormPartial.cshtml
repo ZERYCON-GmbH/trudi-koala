@@ -1,0 +1,5 @@
+﻿@model string
+
+<h2>Gerätespezifische Parameter</h2>
+
+@await Component.InvokeAsync(ViewData["ManufacturerParametersViewName"].ToString(), new { deviceId = Model })

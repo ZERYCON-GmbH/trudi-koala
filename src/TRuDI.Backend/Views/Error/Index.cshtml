@@ -1,0 +1,21 @@
+﻿@using TRuDI.Backend.Application
+@inject ApplicationState StateService
+@{
+    ViewData["Title"] = "Fehler";
+}
+
+<div class="panel panel-danger">
+    <div class="panel-heading">Fehler</div>
+    <div class="panel-body">
+        
+        @foreach (var error in StateService.LastErrorMessages)
+        {
+            <p>@error</p>
+        }
+
+    </div>
+</div>
+
+
+<a href="/BreadCrumb/ClosePage">Zurück</a>
+

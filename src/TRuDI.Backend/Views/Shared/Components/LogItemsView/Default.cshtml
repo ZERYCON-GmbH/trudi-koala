@@ -1,0 +1,31 @@
+﻿@using TRuDI.Backend.Utils
+@using TRuDI.Models.BasicData
+@model IEnumerable<LogEntry>
+
+
+<table class="table-condensed">
+    <tr>
+        <th>Nr.</th>
+        <th>Zeitpunkt</th>
+        <th>Kategorie</th>
+        <th>Meldung</th>
+    </tr>
+    
+
+    @foreach (var entry in Model)
+    {
+        <tr>
+            <td>@entry.RecordNumber</td>
+            <td>@entry.LogEvent.Timestamp</td>
+            <td>@entry.LogEvent.Level.GetLogLevelString()</td>
+            <td>
+                <p>@entry.LogEvent.Text</p>
+                @if (entry.LogEvent.Outcome != null)
+                {
+                    <p>Status: @entry.LogEvent.Outcome.GetOutcomeString()</p>
+                }
+            </td>
+        </tr>
+    }
+
+</table>

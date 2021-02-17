@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" contentScriptType="application/ecmascript" contentStyleType="text/css" height="573px" preserveAspectRatio="none" style="width:332px;height:573px;" version="1.1" viewBox="0 0 332 573" width="332px" zoomAndPan="magnify"><defs><filter height="300%" id="fhclsm3e7ozrz" width="300%" x="-1" y="-1"><feGaussianBlur result="blurOut" stdDeviation="2.0"/><feColorMatrix in="blurOut" result="blurOut2" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 .4 0"/><feOffset dx="4.0" dy="4.0" in="blurOut2" result="blurOut3"/><feBlend in="SourceGraphic" in2="blurOut3" mode="normal"/></filter></defs><g><!--entity TRuDI--><rect fill="#FFFFFF" filter="url(#fhclsm3e7ozrz)" height="47.6094" style="stroke: #000000; stroke-width: 1.5;" width="80" x="104.5" y="298"/><path d="M131.1667,299 L131.1667,303 L124.1667,310 L104.5,310 " fill="none" style="stroke: #000000; stroke-width: 1.5;"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacingAndGlyphs" textLength="40" x="119.5" y="332.5332">TRuDI</text><!--entity Letztverbraucher--><ellipse cx="59.5" cy="163" fill="#FEFECE" filter="url(#fhclsm3e7ozrz)" rx="8" ry="8" style="stroke: #A80036; stroke-width: 2.0;"/><path d="M59.5,171 L59.5,198 M46.5,179 L72.5,179 M59.5,198 L46.5,213 M59.5,198 L72.5,213 " fill="#FEFECE" filter="url(#fhclsm3e7ozrz)" style="stroke: #A80036; stroke-width: 2.0;"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacingAndGlyphs" textLength="107" x="6" y="234.5332">Letztverbraucher</text><!--entity Smgw--><polygon fill="#FEFECE" filter="url(#fhclsm3e7ozrz)" points="56.5,416,66.5,406,232.5,406,232.5,443.6094,222.5,453.6094,56.5,453.6094,56.5,416" style="stroke: #000000; stroke-width: 1.5;"/><line style="stroke: #000000; stroke-width: 1.5;" x1="222.5" x2="231.5" y1="416" y2="407"/><line style="stroke: #000000; stroke-width: 1.5;" x1="56.5" x2="222.5" y1="416" y2="416"/><line style="stroke: #000000; stroke-width: 1.5;" x1="222.5" x2="222.5" y1="416" y2="453.6094"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacingAndGlyphs" textLength="136" x="71.5" y="440.5332">Smart Meter Gateway</text><!--entity Meter1--><polygon fill="#FEFECE" filter="url(#fhclsm3e7ozrz)" points="35.5,524,45.5,514,127.5,514,127.5,551.6094,117.5,561.6094,35.5,561.6094,35.5,524" style="stroke: #000000; stroke-width: 1.5;"/><line style="stroke: #000000; stroke-width: 1.5;" x1="117.5" x2="126.5" y1="524" y2="515"/><line style="stroke: #000000; stroke-width: 1.5;" x1="35.5" x2="117.5" y1="524" y2="524"/><line style="stroke: #000000; stroke-width: 1.5;" x1="117.5" x2="117.5" y1="524" y2="561.6094"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacingAndGlyphs" textLength="52" x="50.5" y="548.5332">Zähler 1</text><!--entity Meter2--><polygon fill="#FEFECE" filter="url(#fhclsm3e7ozrz)" points="162.5,524,172.5,514,254.5,514,254.5,551.6094,244.5,561.6094,162.5,561.6094,162.5,524" style="stroke: #000000; stroke-width: 1.5;"/><line style="stroke: #000000; stroke-width: 1.5;" x1="244.5" x2="253.5" y1="524" y2="515"/><line style="stroke: #000000; stroke-width: 1.5;" x1="162.5" x2="244.5" y1="524" y2="524"/><line style="stroke: #000000; stroke-width: 1.5;" x1="244.5" x2="244.5" y1="524" y2="561.6094"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacingAndGlyphs" textLength="52" x="177.5" y="548.5332">Zähler n</text><!--entity Lieferant--><ellipse cx="229.5" cy="18" fill="#FEFECE" filter="url(#fhclsm3e7ozrz)" rx="8" ry="8" style="stroke: #A80036; stroke-width: 2.0;"/><path d="M229.5,26 L229.5,53 M216.5,34 L242.5,34 M229.5,53 L216.5,68 M229.5,53 L242.5,68 " fill="#FEFECE" filter="url(#fhclsm3e7ozrz)" style="stroke: #A80036; stroke-width: 2.0;"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacingAndGlyphs" textLength="56" x="201.5" y="89.5332">Lieferant</text><!--entity LieferantenXml--><polygon fill="#FEFECE" filter="url(#fhclsm3e7ozrz)" points="148.5,176.5,148.5,214.1094,310.5,214.1094,310.5,186.5,300.5,176.5,148.5,176.5" style="stroke: #000000; stroke-width: 1.5;"/><path d="M300.5,176.5 L300.5,186.5 L310.5,186.5 " fill="#FEFECE" style="stroke: #000000; stroke-width: 1.5;"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacingAndGlyphs" textLength="142" x="158.5" y="201.0332">Lieferanten-XML-Datei</text><!--link Letztverbraucher to TRuDI--><path d="M88.0402,238.303 C100.4721,256.512 114.697,277.347 125.758,293.548 " fill="none" id="Letztverbraucher-TRuDI" style="stroke: #A80036; stroke-width: 1.0;"/><polygon fill="#A80036" points="128.79,297.989,127.0206,288.3004,125.9715,293.8591,120.4128,292.81,128.79,297.989" style="stroke: #A80036; stroke-width: 1.0;"/><!--link TRuDI to Smgw--><path d="M144.5,346 C144.5,362.003 144.5,383.446 144.5,400.528 " fill="none" id="TRuDI-Smgw" style="stroke: #A80036; stroke-width: 1.0;"/><polygon fill="#A80036" points="144.5,405.678,148.5,396.678,144.5,400.678,140.5,396.678,144.5,405.678" style="stroke: #A80036; stroke-width: 1.0;"/><!--link Lieferant to LieferantenXml--><path d="M229.5,93.246 C229.5,118.629 229.5,150.102 229.5,171.16 " fill="none" id="Lieferant-LieferantenXml" style="stroke: #A80036; stroke-width: 1.0;"/><polygon fill="#A80036" points="229.5,176.279,233.5,167.279,229.5,171.279,225.5,167.279,229.5,176.279" style="stroke: #A80036; stroke-width: 1.0;"/><!--link LieferantenXml to TRuDI--><path d="M217.14,214.603 C203.009,235.301 179.72,269.413 163.328,293.422 " fill="none" id="LieferantenXml-TRuDI" style="stroke: #A80036; stroke-width: 1.0;"/><polygon fill="#A80036" points="160.352,297.782,168.7301,292.6043,163.1712,293.6526,162.1229,288.0937,160.352,297.782" style="stroke: #A80036; stroke-width: 1.0;"/><!--link Smgw to Meter1--><path d="M130.83,454 C121.237,470.1409 108.355,491.8162 98.1601,508.9688 " fill="none" id="Smgw-Meter1" style="stroke: #A80036; stroke-width: 1.0;"/><polygon fill="#A80036" points="95.3609,513.6784,103.3978,507.9856,97.9156,509.3803,96.5209,503.8981,95.3609,513.6784" style="stroke: #A80036; stroke-width: 1.0;"/><!--link Smgw to Meter2--><path d="M158.387,454 C168.132,470.1409 181.219,491.8162 191.575,508.9688 " fill="none" id="Smgw-Meter2" style="stroke: #A80036; stroke-width: 1.0;"/><polygon fill="#A80036" points="194.419,513.6784,193.191,503.9064,191.8345,509.3982,186.3427,508.0417,194.419,513.6784" style="stroke: #A80036; stroke-width: 1.0;"/><!--
+@startuml
+
+skinparam componentStyle uml2
+
+:Letztverbraucher:
+node "Smart Meter Gateway" as Smgw
+node "Zähler 1" as Meter1
+node "Zähler n" as Meter2
+
+:Lieferant: as Lieferant
+file "Lieferanten-XML-Datei" as LieferantenXml
+
+frame TRuDI {
+}
+
+Letztverbraucher - -> TRuDI
+TRuDI - -> Smgw
+
+Lieferant - -> LieferantenXml 
+LieferantenXml - -> TRuDI
+Smgw - -> Meter1
+Smgw - -> Meter2
+
+@enduml
+
+PlantUML version 1.2017.20(Mon Dec 11 17:57:05 CET 2017)
+(GPL source distribution)
+Java Runtime: Java(TM) SE Runtime Environment
+JVM: Java HotSpot(TM) 64-Bit Server VM
+Java Version: 1.8.0_151-b12
+Operating System: Windows 10
+OS Version: 10.0
+Default Encoding: Cp1252
+Language: de
+Country: DE
+--></g></svg>

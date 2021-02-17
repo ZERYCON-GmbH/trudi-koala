@@ -1,0 +1,287 @@
+﻿<?xml version='1.0' encoding='UTF-8'?>
+<UsagePoints 
+             xmlns="http://vde.de/AR_2418-6.xsd" 
+             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+             xsi:schemaLocation="http://vde.de/AR_2418-6.xsd AR_2418-6.xsd" 
+             xmlns:espi="http://naesb.org/espi" 
+             xmlns:atom="http://www.w3.org/2005/Atom">
+	<UsagePoint>
+		<espi:ServiceCategory>
+			<espi:kind>0</espi:kind>
+		</espi:ServiceCategory>
+	
+        <!-- MesspunktID -->
+		<usagePointId>DE00000000000000000000000000000001</usagePointId>
+		
+		<Customer>
+            <!-- 
+            ObjectID des Letztverbrauchers, dem die die Daten zugeordnet werden
+            (Cosem Logical Device ohne .sm)
+            ! Das ist nicht der Anmeldename des Letztverbrauchers 
+            -->
+			<customerId>userID-001</customerId>
+		</Customer>
+
+        <InvoicingParty>
+            <!-- 
+            Platzhalter BDEW Kennung des Lieferanten 
+            Der Wert wird durch den GWA in der Konfiguration eines Tarifprofiles
+            hinterlegt. Für das SMGw ist der Wert transparent, da nicht benutzt.
+            -->
+			<invoicingPartyId>EMT-BDEW</invoicingPartyId>
+		</InvoicingParty>
+
+		<SMGW>
+			<certId>1</certId>
+			<smgwId>DNT0017055173</smgwId>
+		</SMGW>
+
+		<Certificate>
+            <!-- 
+            Zertifikat, dass für die Inhaltsdatensignierung benutzt
+            wurde
+            -->
+			<certId>1</certId>
+			<certType>3</certType>
+			<certContent>00112233FF</certContent>
+		</Certificate>
+ 		
+        <!-- 
+        Das Feld wird durch den GWA mit in das Auswertungsprofil gespeichert
+		und hier transparent ausgegeben. Es dient zur Identifikation des Tarifes.
+        -->
+		<tariffName>Normal Tarif</tariffName>
+		
+        <!-- 
+        Log-Einträge des Letztverbraucher Protokolls im Abfragezeitraum
+        werden durch das mehrfache Verwenden des Elementes <LogEntry>
+        dargestellt
+        -->
+        <LogEntry>
+            <!-- ... -->
+		</LogEntry>
+		
+        
+        <!-- 
+        Im TAF-2 werden mehrere Tarifstufen abgebildet. Für jede Tarifstufe
+        wird ein eigenen Element <MeterReading> erzeugt.
+        Es wird die Abrechnungsturnusliste ausgelesen
+        -->
+        
+		<MeterReading>
+            <!-- Originäre Messwerteliste -->
+			<Meter>
+				<meterId>0A01454D48000051971E</meterId>
+			</Meter>
+			
+            <!-- 
+            AR-V095:
+            Die meterReadingId identifiziert eine Messwertliste eindeutig. Die ID kann 
+            zum Beispiel aus der Zählpunktbezeichnung, der Gerätenummer und der OBIS-Kennziffer 
+            zusammengesetzt werden.
+            Im Beispiel ist die MesspunktID verwendet worden
+            -->
+			<meterReadingId>DE00000000000000000000000000000001</meterReadingId>
+			
+            <!-- 
+            Der Zähler hat Wh aufgezeichnet
+            -->
+			<ReadingType>
+				<espi:powerOfTenMultiplier>0</espi:powerOfTenMultiplier>
+				<espi:uom>72</espi:uom>
+				<scaler>-1</scaler>
+                <!-- 
+                1-0:1.8.0*255 wird aufgezeichnet
+                -->
+				<obisCode>0100010800ff</obisCode>
+                <!-- 
+                Cosem-Definition: <OBIS>.<Meter-ID>.sm
+                -->
+				<qualifiedLogicalName>0100010800ff.0A01454D48000051971E.sm</qualifiedLogicalName>
+			</ReadingType>
+			
+			<IntervalBlock> 
+                <!-- 
+                Das Interval bezeichnet einen oder mehrere Abrechnungszeiträume
+                -->
+				<interval>
+                    <!-- Monat Januar -->
+					<duration>2678400</duration>
+					<start>2017-01-01T00:00:00+02:00</start>
+				</interval>
+			
+                <!-- Messwert 63911,8 Wh -->
+				<IntervalReading>
+					<espi:value>639118</espi:value>			
+					<timePeriod>
+						<duration>0</duration>
+						<start>2017-02-01T00:00:00+02:00</start>
+					</timePeriod>
+                    <!-- Statuswort mach FNN -->
+                    <!-- SMGW-Status und Zählerstatus in HEX Notation-->
+					<statusFNN>0000010500100504</statusFNN>
+                    <!-- PTB Teil des Statuswortes -->
+					<statusPTB>0</statusPTB>
+				</IntervalReading>
+			</IntervalBlock>						
+		</MeterReading>	
+        
+        
+        <MeterReading>
+            <!-- 1.8.0 Summe -->
+			<Meter>
+				<meterId>0A01454D48000051971E</meterId>
+			</Meter>	
+			<meterReadingId>DE00000000000000000000000000000001</meterReadingId>
+			<ReadingType>
+				<espi:powerOfTenMultiplier>0</espi:powerOfTenMultiplier>
+				<espi:uom>72</espi:uom>
+				<obisCode>0100010800ff</obisCode>
+                <!-- 
+                Cosem-Definition: <OBIS>.<TAF-ID>.sm
+                -->
+				<qualifiedLogicalName>0100010800ff.TAF-2-ID.sm</qualifiedLogicalName>
+			</ReadingType>
+			
+			<IntervalBlock> 
+				<interval>
+					<duration>2678400</duration>
+					<start>2017-01-01T00:00:00+02:00</start>
+				</interval>
+			
+                <!-- 
+                Messwert 11,8 Wh.
+                Summe seit Start des TAF-2
+                -->
+				<IntervalReading>
+					<espi:value>118</espi:value>			
+					<timePeriod>
+						<duration>0</duration>
+						<start>2017-02-01T00:00:00+02:00</start>
+					</timePeriod>
+                    <!-- Statuswort mach FNN -->
+                    <!-- SMGW-Status und Zählerstatus in HEX Notation-->
+					<statusFNN>0000010500100504</statusFNN>
+                    <!-- PTB Teil des Statuswortes -->
+					<statusPTB>0</statusPTB>
+				</IntervalReading>
+			</IntervalBlock>						
+		</MeterReading>
+        
+        <MeterReading>
+            <!-- 1.8.1 Tarifstufe 1 -->
+			<Meter>
+				<meterId>0A01454D48000051971E</meterId>
+			</Meter>	
+			<meterReadingId>DE00000000000000000000000000000001</meterReadingId>
+			<ReadingType>
+				<espi:powerOfTenMultiplier>0</espi:powerOfTenMultiplier>
+				<espi:uom>72</espi:uom>
+				<obisCode>0100010801ff</obisCode>
+				<qualifiedLogicalName>0100010801ff.TAF-2-ID.sm</qualifiedLogicalName>
+			</ReadingType>
+			
+			<IntervalBlock> 
+				<interval>
+					<duration>2678400</duration>
+					<start>2017-01-01T00:00:00+02:00</start>
+				</interval>
+			
+                <!-- 
+                Messwert 5,0 Wh.
+                Summe seit Start des TAF-2
+                -->
+				<IntervalReading>
+					<espi:value>50</espi:value>			
+					<timePeriod>
+						<duration>0</duration>
+						<start>2017-02-01T00:00:00+02:00</start>
+					</timePeriod>
+                    <!-- Statuswort mach FNN -->
+                    <!-- SMGW-Status und Zählerstatus in HEX Notation-->
+					<statusFNN>0000010500100504</statusFNN>
+                    <!-- PTB Teil des Statuswortes -->
+					<statusPTB>0</statusPTB>
+				</IntervalReading>
+			</IntervalBlock>						
+		</MeterReading>
+        
+        <MeterReading>
+            <!-- 1.8.1 Tarifstufe 1 -->
+			<Meter>
+				<meterId>0A01454D48000051971E</meterId>
+			</Meter>	
+			<meterReadingId>DE00000000000000000000000000000001</meterReadingId>
+			<ReadingType>
+				<espi:powerOfTenMultiplier>0</espi:powerOfTenMultiplier>
+				<espi:uom>72</espi:uom>
+				<obisCode>0100010801ff</obisCode>
+				<qualifiedLogicalName>0100010802ff.TAF-2-ID.sm</qualifiedLogicalName>
+			</ReadingType>
+			
+			<IntervalBlock> 
+				<interval>
+					<duration>2678400</duration>
+					<start>2017-01-01T00:00:00+02:00</start>
+				</interval>
+			
+                <!-- 
+                Messwert 6,5 Wh.
+                Summe seit Start des TAF-2
+                -->
+				<IntervalReading>
+					<espi:value>65</espi:value>			
+					<timePeriod>
+						<duration>0</duration>
+						<start>2017-02-01T00:00:00+02:00</start>
+					</timePeriod>
+                    <!-- Statuswort mach FNN -->
+                    <!-- SMGW-Status und Zählerstatus in HEX Notation-->
+					<statusFNN>0000010500100504</statusFNN>
+                    <!-- PTB Teil des Statuswortes -->
+					<statusPTB>0</statusPTB>
+				</IntervalReading>
+			</IntervalBlock>						
+		</MeterReading>
+        
+        
+        <MeterReading>
+            <!-- 1.8.63 Fehlerregister -->
+			<Meter>
+				<meterId>0A01454D48000051971E</meterId>
+			</Meter>	
+			<meterReadingId>DE00000000000000000000000000000001</meterReadingId>
+			<ReadingType>
+				<espi:powerOfTenMultiplier>0</espi:powerOfTenMultiplier>
+				<espi:uom>72</espi:uom>
+				<obisCode>010001083fff</obisCode>
+				<qualifiedLogicalName>010001083fff.TAF-2-ID.sm</qualifiedLogicalName>
+			</ReadingType>
+			
+			<IntervalBlock> 
+				<interval>
+					<duration>2678400</duration>
+					<start>2017-01-01T00:00:00+02:00</start>
+				</interval>
+			
+                <!-- 
+                Messwert 0,0 Wh.
+                Summe seit Start des TAF-2
+                -->
+				<IntervalReading>
+					<espi:value>0</espi:value>			
+					<timePeriod>
+						<duration>0</duration>
+						<start>2017-02-01T00:00:00+02:00</start>
+					</timePeriod>
+                    <!-- Statuswort mach FNN -->
+                    <!-- SMGW-Status und Zählerstatus in HEX Notation-->
+					<statusFNN>0000010500100504</statusFNN>
+                    <!-- PTB Teil des Statuswortes -->
+					<statusPTB>0</statusPTB>
+				</IntervalReading>
+			</IntervalBlock>						
+		</MeterReading>
+        
+	</UsagePoint>
+</UsagePoints>

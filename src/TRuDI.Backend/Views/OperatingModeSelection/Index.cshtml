@@ -1,0 +1,58 @@
+﻿@{
+    ViewData["Title"] = "Betriebsart wählen";
+}
+
+@if (ViewData.ContainsKey("InternalError"))
+{
+    <div class="alert alert-danger">
+        Es ist ein Programmfehler aufgetreten.
+    </div>
+}
+
+<div class="well">
+    <h3>Transparenz- und Display-Software (TRuDI)</h3>
+    <p>
+        Mit TRuDI (Transparenz- und Display-Software) stellt der Arbeitskreis Bundesdisplay eine
+        herstellerübergreifende, standardisierte Visualisierungslösung bereit, die die Anforderungen
+        des MsbG (insbesondere §35, §62), der PTB-A50.8 erfüllt und die im Rahmen der Vorgaben des
+        Bundesamts für Sicherheit in der Informationstechnik nutzbar ist.
+    </p>
+
+    <p>
+        <a href="/Help">Mehr dazu...</a>
+    </p>
+</div>
+
+
+<div class="panel panel-primary">
+    <div class="panel-heading">Anzeigefunktion</div>
+    <div class="panel-body">
+        <p>
+            Über die Anzeigefunktion können Sie sich jederzeit die aktuellen Registerstände, Zählerstandsgänge
+            sowie Meldugen des Smart Meter Gateways anzeigen lassen.
+        </p>
+        <p>
+            Erfolgt die Tarifierung direkt im Smart Meter Gateway, können die angezeigten Registerstände zur
+            Rechnungsprüfung verwendet werden.
+        </p>
+        <p>
+            <a class="btn btn-primary" asp-controller="OperatingModeSelection" asp-action="StartDisplayFunction" role="button">Weiter</a>
+        </p>
+    </div>
+</div>
+
+<div class="panel panel-primary">
+    <div class="panel-heading">Transparenzfunktion</div>
+    <div class="panel-body">
+        <p>
+            Erfolgt die Tarifierung nicht im Smart Meter Gateway selbst, sondern anhand einer Zählerstandsgangmessung
+            bei Ihrem Lieferanten, erhalten Sie von diesem eine Datei mit Tarifierungsinformationen. Mittels dieser Datei
+            kann TRuDI die zur Rechnungsprüfung benötitgten Daten aus dem Smart Meter Gateway laden, die Tarifregister
+            berechnen und anzeigen.
+        </p>
+        <p>
+            <a class="btn btn-primary" asp-controller="OperatingModeSelection" asp-action="StartTransparencyFunction" role="button">Weiter</a>
+        </p>
+    </div>
+</div>
+

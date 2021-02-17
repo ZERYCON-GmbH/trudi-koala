@@ -1,0 +1,73 @@
+﻿@using TRuDI.Backend.Application
+@using TRuDI.Backend.Utils
+@using TRuDI.Models
+@inject ApplicationState StateService
+
+@{
+    var contract = StateService.CurrentAdapterContext.Contract;
+}
+
+<div class="panel panel-primary">
+    <div class="panel-heading">Messlokation @contract.MeteringPointId</div>
+    <div class="panel-body">
+
+        <table class="table">
+            <tr>
+                <th>Tarifbezeichnung</th>
+                <td>@contract.TafName</td>
+            </tr>
+            
+            <tr>
+                <th>Energieart</th>
+                <td>@contract.GetMedium()</td>
+            </tr>
+
+            <tr>
+                <th>Tarifanwendungsfall</th>
+                <td>@contract.TafId.TafToFriendlyName()</td>
+            </tr>
+
+            @if (!string.IsNullOrWhiteSpace(contract.Description))
+            {
+                <tr>
+                    <th>Beschreibung</th>
+                    <td>@contract.Description</td>
+                </tr>
+            }
+
+            <tr>
+                <th>ID des Kunden</th>
+                <td>@contract.ConsumerId</td>
+            </tr>
+
+            <tr>
+                <th>ID des Rechnungsstellers</th>
+                <td>@contract.SupplierId</td>
+            </tr>
+
+            <tr>
+                <th>Startzeitpunkt der Ablesung</th>
+                <td>@StateService.CurrentAdapterContext.Start.ToFormatedString()</td>
+            </tr>
+
+            <tr>
+                <th>Endzeitpunkt der Ablesung</th>
+                <td>@StateService.CurrentAdapterContext.End.ToFormatedString()</td>
+            </tr>
+
+            <tr>
+                <th>
+                    Zähler
+                </th>
+
+                <td>
+                    @foreach (var meter in contract.Meters)
+                    {
+                        @meter.ToFormattedDeviceId()<br />
+                    }
+                </td>
+            </tr>
+
+        </table>
+    </div>
+</div>

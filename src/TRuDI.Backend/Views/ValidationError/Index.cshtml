@@ -1,0 +1,36 @@
+﻿@using TRuDI.Backend.Application
+@inject ApplicationState StateService
+@{
+    ViewData["Title"] = "Fehler";
+}
+
+<div class="panel panel-danger">
+    <div class="panel-heading">Daten konnten nicht geladen werden</div>
+    <div class="panel-body">
+        <p>Bei der Verarbeitung der Daten des Smart Meter Gateways ist ein Fehler aufgetreten.</p>
+        
+        @foreach (var error in StateService.LastErrorMessages)
+        {
+            <p>@error</p>
+        }
+
+        @if (StateService.CurrentDataResult?.Raw != null)
+        {
+            <p>
+                @if (ViewData.ContainsKey("Debug"))
+                {
+                    <a href="/DataView/Export/XML">XML-Datei speichern</a>
+                }
+                else
+                {
+                    <a onclick="showSaveFileDialog('/DataView/ExportToFile/XML', 'XML-Datei', 'xml')" style="cursor:pointer;">XML-Datei speichern</a>
+                }
+            </p>
+        }
+    </div>
+</div>
+
+
+
+<a href="/BreadCrumb/ClosePage">Zurück</a>
+

@@ -1,0 +1,57 @@
+﻿@using TRuDI.Backend.Application
+@using TRuDI.Models
+@using TRuDI.Models.BasicData
+@inject ApplicationState StateService
+@{
+    ViewData["Title"] = "Zertifikate zu den Abrechnungsdaten";
+
+    var certs = StateService.CurrentDataResult?.Model?.Certificates ?? new List<Certificate>();
+}
+
+@if (!certs.Any())
+{
+    <div class="panel panel-primary">
+        <div class="panel-heading">Zertifikate</div>
+        <div class="panel-body">
+            <p>Keine Zertifikate verfügbar.</p>
+        </div>
+    </div>
+}
+else
+{
+    foreach (var cert in certs)
+    {
+        <div class="panel panel-primary">
+            <div class="panel-heading">
+                @switch (cert.CertType)
+                {
+                    case CertType.Signatur:
+                        <text>Signatur-Zertifikat</text>
+                        break;
+
+                    case CertType.SubCA:
+                        <text>Zertifikat der Sub-CA</text>
+                        break;
+
+                    case CertType.SmgwHan:
+                        <text>Zertifikat der HAN-Schnittstelle</text>
+                        break;
+
+                    case null:
+                        <text>Unbekannter Zertifikatstyp</text>
+                        break;
+
+                    default:
+                        throw new ArgumentOutOfRangeException();
+                }
+            </div>
+            <div class="panel-body">
+                @await Component.InvokeAsync("CertDetailsView", new { cert = cert.GetCert() })
+            </div>
+        </div>
+    }
+}
+
+<a href="/BreadCrumb/ClosePage">Zurück</a>
+
+@await Html.PartialAsync("~/Views/DataView/_ExportDataDialog.cshtml")

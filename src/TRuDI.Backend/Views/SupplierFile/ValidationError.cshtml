@@ -1,0 +1,61 @@
+﻿@using TRuDI.Backend.Application
+@using TRuDI.Backend.Utils
+@inject ApplicationState StateService
+@{
+    ViewData["Title"] = "Fehler";
+}
+
+<div class="panel panel-danger">
+    <div class="panel-heading">Daten konnten nicht geladen werden</div>
+    <div class="panel-body">
+        <p>Bei der Verarbeitung Tarifdaten ist ein Fehler aufgetreten.</p>
+
+        <div class="form-group">
+            @foreach (var error in StateService.LastErrorMessages)
+            {
+                <p>@error</p>
+            }
+        </div>
+
+        <div class="form-group">
+            <label>Dateiname:</label>
+            <div>
+                @if (!string.IsNullOrWhiteSpace(StateService.CurrentSupplierFile?.Filename))
+                {
+                    <text>@StateService.CurrentSupplierFile.Filename</text>
+                }
+                else
+                {
+                    <text>@StateService.CurrentSupplierFile?.DownloadUrl</text>
+                }
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label>RIPEMD-160-Prüfsumme:</label>
+            <div>
+                @StateService.CurrentSupplierFile?.DigestRipemd160.AddSpace(4)
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label>SHA-3-Prüfsumme:</label>
+            <div>
+                @StateService.CurrentSupplierFile?.DigestSha3.AddSpace(4)
+            </div>
+        </div>
+
+
+        <!-- Saving the file makes only sense for downloaded files... -->
+        @if (!string.IsNullOrWhiteSpace(StateService.CurrentSupplierFile?.DownloadUrl) && StateService.CurrentSupplierFile?.Data != null)
+        {
+            <div class="form-group">
+                <p>
+                    <a asp-action="DownloadXml">XML-Datei speichern</a>
+                </p>
+            </div>
+        }
+    </div>
+</div>
+
+

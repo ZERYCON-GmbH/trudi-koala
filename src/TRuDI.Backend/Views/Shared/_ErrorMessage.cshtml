@@ -1,0 +1,6 @@
+﻿@if (!string.IsNullOrWhiteSpace(ViewData["ErrorMessage"]?.ToString()))
+{
+    <div class="alert alert-danger" role="alert">
+        @ViewData["ErrorMessage"]
+    </div>
+}

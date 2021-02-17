@@ -1,0 +1,24 @@
+﻿@using TRuDI.Backend.Application
+@using TRuDI.Backend.Utils
+@inject ApplicationState StateService
+
+<div class="panel panel-primary">
+    <div class="panel-heading">Smart Meter Gateway @StateService.ConnectData.DeviceId.ToFormattedDeviceId()</div>
+    <div class="panel-body">
+
+        <table class="table">
+            <tr>
+                <th>Smart Meter Gateway</th>
+                <td>@StateService.ConnectData.DeviceId.ToFormattedDeviceId()</td>
+            </tr>
+            <tr>
+                <th>Adresse</th>
+                <td>@StateService.ConnectData.Address</td>
+            </tr>
+            <tr>
+                <th>Port</th>
+                <td>@StateService.ConnectData.Port</td>
+            </tr>
+        </table>
+    </div>
+</div>

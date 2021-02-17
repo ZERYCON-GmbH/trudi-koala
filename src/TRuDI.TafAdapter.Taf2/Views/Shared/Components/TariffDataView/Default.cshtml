@@ -1,0 +1,153 @@
+﻿@using System.Globalization
+@using TRuDI.Models
+@using TRuDI.TafAdapter.Interface.Taf2
+@using TRuDI.TafAdapter.Taf2.Components
+@model TariffDataViewModel
+
+@{
+    var colors = new Dictionary<int, string> {
+        { 1, "#00baad" },
+        { 2, "#ff5733" },
+        { 3, "#2a7b9b" },
+        { 4, "#ff8d1a" },
+        { 5, "#3d3d6b" },
+        { 6, "#ffc300" },
+        { 7, "#511849" },
+        { 8, "#eddd53" },
+        { 9, "#900c3f" },
+        { 10, "#add45c" },
+        { 11, "#c70039" },
+        { 12, "#57c785" },
+        { 13, "#ff00ff" },
+        { 14, "#0000ff" },
+        { 15, "#00ffff" },
+        { 16, "#00ff00" },
+        { 17, "#ffff00" },
+        { 18, "#7f0000" },
+        { 19, "#7f007f" },
+        { 20, "#00007f" },
+        { 63,"red" },
+        { 163,"red" },
+        { 263,"red" },
+    };
+}
+
+
+<style>
+    .chart-section div {
+        display: inline-block;
+        *display: inline;
+        zoom: 1;
+        vertical-align: top;
+    }
+
+    .stroke {
+        color: white;
+        text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;
+    }
+</style>
+
+@foreach (var sec in Model.Data.AccountingSections.Where(s => s.Start == Model.Timestamp))
+{
+    var importDirection = sec.Reading.ObisCode.C == 1;
+
+    <div style="clear: both; overflow: auto;">
+        
+        @if (importDirection)
+        {
+            <h3>Bezug am @Model.Timestamp.ToString("dd.MM.yyyy")</h3>
+        }
+        else
+        {
+            <h3>Lieferung am @Model.Timestamp.ToString("dd.MM.yyyy")</h3>
+        }
+
+        <div>
+            @{
+                var sourceType = @Model.Data.SummaryRegister.First().SourceType;
+                var unit = sourceType.Uom.GetDisplayUnit(sourceType.PowerOfTenMultiplier.Value);
+
+                int minPeriodLength = 96;
+                foreach (var mr in sec.MeasuringRanges)
+                {
+                    var length = (int)(mr.End - mr.Start).TotalMinutes / 15;
+                    minPeriodLength = Math.Min(minPeriodLength, length);
+                }
+            }
+
+            <div class="col-sm-6">
+                <h4>Tarifschaltzeiten</h4>
+
+                @foreach (var mr in sec.MeasuringRanges)
+                {
+                    var duration = (int)(mr.End - mr.Start).TotalMinutes / 15;
+
+                    <div class="chart-section">
+                        <div class="stroke" style="background: @colors[mr.TariffId]; height: @((duration / minPeriodLength * 4).ToString("F1", CultureInfo.InvariantCulture))em; width: 4em; text-align: center;">
+                            @mr.Start.ToString("HH:mm")<br/>
+                            @("T" + mr.TariffId)
+                        </div>
+
+                        <div>
+                            Tarif @mr.TariffId von @mr.Start.ToString("HH:mm") Uhr bis @(mr.End.Hour == 0 && mr.End.Minute == 0 ? "24:00" : mr.End.ToString("HH:mm")) Uhr<br/>
+                            <strong>@mr.Amount.GetDisplayValue(sourceType) @unit</strong>
+                        </div>
+                    </div>
+                }
+
+            </div>
+
+            <div class="col-sm-6">
+                <h4>Tagessummen</h4>
+
+                <table class="table">
+                    <tr>
+                        <th>Tarif</th>
+                        <th class="text-right">Wert</th>
+                        <th>Einheit</th>
+                    </tr>
+
+                    @{
+                        long totalAmount = 0;
+                    }
+
+                    @foreach (var register in sec.SummaryRegister.Where(s => s.ObisCode.C == (importDirection ? 1 : 2)))
+                    {
+                        var tariffDescription = Model.Data.TariffStages.FirstOrDefault(ts => new ObisId(ts.ObisCode) == register.ObisCode)?.Description;
+                        if (!string.IsNullOrWhiteSpace(tariffDescription) && register.TariffId != 63)
+                        {
+                            tariffDescription = $"{tariffDescription} (Tarif {register.TariffId})";
+                        }
+                        else
+                        {
+                            tariffDescription = register.TariffId >= 63 ? "Fehlerregister" : "Tarif " + register.TariffId;
+                        }
+
+                        if (register.Amount.HasValue)
+                        {
+                            totalAmount += register.Amount.Value;
+                        }
+
+                        <tr>
+                            <td>@tariffDescription</td>
+                            <td class="text-right">
+                                @register.Amount.GetDisplayValue(sourceType)
+                            </td>
+                            <td>@unit</td>
+                        </tr>
+                    }
+
+
+                    <tr>
+                        <td><strong>Gesamt</strong></td>
+                        <td class="text-right">
+                            <strong>@totalAmount.GetDisplayValue(sourceType)</strong>
+                        </td>
+                        <td><strong>@unit</strong></td>
+                    </tr>
+
+                </table>
+            </div>
+        </div>
+    </div>
+}

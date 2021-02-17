@@ -1,0 +1,54 @@
+@using System.Security.Cryptography.X509Certificates
+@using TRuDI.Backend.Utils
+@model X509Certificate2
+
+<table class="table">
+    <tr>
+        <th>Ausgestellt für</th>
+        <td>@Model.GetNameInfo(X509NameType.SimpleName, false)</td>
+    </tr>
+
+    <tr>
+        <th>Ausgestellt von</th>
+        <td>@Model.GetNameInfo(X509NameType.SimpleName, true)</td>
+    </tr>
+
+    <tr>
+        <th>Gültigkeit</th>
+        <td>@Model.NotBefore bis @Model.NotAfter</td>
+    </tr>
+
+    <tr>
+        <th>Format</th>
+        <td>@Model.GetFormat()</td>
+    </tr>
+
+    <tr>
+        <th>Version</th>
+        <td>@Model.Version</td>
+    </tr>
+
+    <tr>
+        <th>Öffentlicher Schlüssel</th>
+        <td style="font-family: monospace;">@Model.GetPublicKeyString().AddSpace(4)</td>
+    </tr>
+
+    <tr>
+        <th>Seriennummer</th>
+        <td>@Model.GetHexAndDecimalSerialNumber()</td>
+    </tr>
+
+    <tr>
+        <th>Schlüsselalgorithmus</th>
+        <td>@Model.GetKeyAlgorithm().OidToFriendlyName()</td>
+    </tr>
+    <tr>
+        <th>Prüfsumme</th>
+        <td style="font-family: monospace;">@Model.GetCertHashString().AddSpace(4)</td>
+    </tr>
+
+    <tr>
+        <th>Signaturalgorithmus</th>
+        <td>@Model.SignatureAlgorithm.FriendlyName</td>
+    </tr>
+</table>

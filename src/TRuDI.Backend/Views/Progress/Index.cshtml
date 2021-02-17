@@ -1,0 +1,130 @@
+@using TRuDI.HanAdapter.Interface
+@model ProgressData
+@{
+   ViewData["Title"] = Model.Title;
+}
+
+@if (!string.IsNullOrWhiteSpace(Model.DetailsViewName))
+{
+   <div>
+      @await Html.PartialAsync(Model.DetailsViewName)
+   </div>
+}
+
+<div class="form-group">
+   <div class="progress">
+      @if (Model.Progress == ProgressInfo.UnknownProgress)
+      {
+         <div class="progress-bar progress-bar-striped active" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width: 100%; transition: none;"></div>
+      }
+      else
+      {
+         <div class="progress-bar progress-bar-striped active" role="progressbar" aria-valuenow="@Model.Progress" aria-valuemin="0" aria-valuemax="100" style="width: @Model.Progress%; transition: none;"></div>
+      }
+   </div>
+   <div id="status-text">@Model.StatusText</div>
+
+</div>
+
+<div class="form-group">
+   <div>
+      <button class="btn btn-default" id="btnCancel" onclick="cancel();">Vorgang Abbrechen</button>
+   </div>
+</div>
+
+<script src="~/js/WebSocketManager.js"></script>
+<script language="javascript" type="text/javascript">
+
+   function CheckNextPage(connection) {
+      $.ajax({
+         url: '/Progress/GetNextPageToLoad',
+         type: "GET",
+         contentType: false,
+         processData: false,
+         success: function(result) {
+            console.log(result);
+
+            if (connection) {
+               connection.close();
+            }
+            
+            window.location.href = result;
+         },
+         error: function(err) {}
+      });
+   }
+
+   function HandleProgressUpdatesAndCheckForNextPage() {
+      var connection = null;
+
+        try {
+            connection =
+                new WebSocketManager.Connection('@ViewData["WebSocketProtocol"]//127.0.0.1:' +
+                    location.port +
+                    '/notifications');
+
+            connection.enableLogging = true;
+
+            connection.connectionMethods.onConnected = () => {
+               console.log("WebSocket connected, ID: " + connection.connectionId);
+
+               // Maybe already all processing is done here and "LoadNextPage" message was missed: check for the next page
+               CheckNextPage(connection);
+            }
+
+            connection.connectionMethods.onDisconnected = () => {
+                console.log("Disconnected!");
+            }
+
+            connection.clientMethods["ProgressUpdate"] = (message, pos) => {
+                console.log(message);
+
+                if (pos == -1) {
+                    $('.progress-bar').addClass("progress-bar-striped").addClass("active")
+                        .removeClass("progress-bar-success").removeClass("progress-bar-info");
+                    $('.progress-bar').css('width', '100%').attr('aria-valuenow', 100);
+                    $('#status-text').html(message);
+                } else {
+                    $('.progress-bar').removeClass("progress-bar-striped").removeClass("active")
+                        .removeClass("progress-bar-info").addClass("progress-bar-success");
+                    $('.progress-bar').css('width', pos + '%').attr('aria-valuenow', pos);
+                    $('#status-text').html(message);
+                }
+            };
+
+            connection.clientMethods["LoadNextPage"] = (url) => {
+                console.log(url);
+                this.close();
+                window.location.href = url;
+            };
+
+            connection.start();
+
+            // check, if the operation is already finished
+            CheckNextPage(connection);
+        } catch (ex) {
+            // In case of an error: reestablish the web socket connection after 1 second...
+            setTimeout(HandleProgressUpdatesAndCheckForNextPage, 1000);
+
+            // ...and check for the next page immediately
+            CheckNextPage(connection);
+        }
+    }
+
+    function cancel() {
+
+        $('#btnCancel').prop('disabled', true).text("Vorgang wird abgebrochen...");
+
+        $.ajax({
+            url: '/Progress/CancelOperation',
+            type: "POST",
+            contentType: false,
+            processData: false,
+            success: function (result) { },
+            error: function (err) { }
+        });
+    }
+
+    $(document).ready(HandleProgressUpdatesAndCheckForNextPage);
+
+</script>

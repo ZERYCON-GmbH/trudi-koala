@@ -1,0 +1,87 @@
+@startuml
+
+
+actor Letztverbraucher
+
+box "Views" #LightBlue
+    participant "OperatingMode-\nSelection" as OpModSelView 
+    participant "SupplierFile" as SupplierFileView
+    participant "SupplierFile\nBillingPeriod-\nSelection" as BillingPeriodSelView 
+    participant "Connect" as ConnectView 
+    participant "Contracts" as ContractsView
+    participant "Data" as DataView
+    participant "Progress" as ProgressView
+end box
+
+participant "ApplicationState" as AppState
+participant "HAN-Adapter" as HanAdapter
+participant "TAF-Adapter" as TafAdapter
+
+Letztverbraucher -> OpModSelView : Startet TRuDI
+activate OpModSelView
+
+Letztverbraucher -> OpModSelView : Wählt Transparenz-Funktion aus
+OpModSelView -> SupplierFileView
+deactivate OpModSelView
+
+activate SupplierFileView
+Letztverbraucher -> SupplierFileView : Wählt Datei aus
+
+SupplierFileView -> BillingPeriodSelView
+deactivate SupplierFileView
+
+activate BillingPeriodSelView
+
+Letztverbraucher -> BillingPeriodSelView : "Messdaten laden"
+BillingPeriodSelView -> ConnectView
+
+deactivate BillingPeriodSelView
+
+activate ConnectView
+Letztverbraucher -> ConnectView : Gibt Verbindungsdaten ein
+Letztverbraucher -> ConnectView : Verbinden
+
+ConnectView ->> AppState : ConnectAndLoadContracts()
+activate AppState
+
+ConnectView ->> ProgressView : Anzeigen
+deactivate ConnectView
+activate ProgressView
+
+AppState -> HanAdapter : Connect()
+activate HanAdapter
+ProgressView <<-- HanAdapter : ProgressCallback()
+AppState <-- HanAdapter
+deactivate HanAdapter
+
+AppState -> HanAdapter : LoadAvailableContracts()
+activate HanAdapter
+ProgressView <<-- HanAdapter : ProgressCallback()
+ProgressView <<-- HanAdapter : ProgressCallback()
+AppState <-- HanAdapter 
+deactivate HanAdapter
+
+AppState -> AppState : Vertrag in den SMGW-Daten suchen
+
+AppState -> HanAdapter : LoadData()
+activate HanAdapter
+ProgressView <<-- HanAdapter : ProgressCallback()
+ProgressView <<-- HanAdapter : ProgressCallback()
+AppState <-- HanAdapter 
+deactivate HanAdapter
+
+AppState -> TafAdapter : Calculate()
+activate TafAdapter
+AppState <-- TafAdapter
+deactivate TafAdapter
+
+deactivate ProgressView
+
+AppState -> DataView
+deactivate AppState
+
+activate DataView
+
+@enduml
+
+

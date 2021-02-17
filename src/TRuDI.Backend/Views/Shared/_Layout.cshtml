@@ -1,0 +1,221 @@
+@using Microsoft.AspNetCore.Http
+@using TRuDI.Backend.Application
+@using TRuDI.Backend.Utils
+@inject ApplicationState StateService
+
+@{
+    var isProgressPage = ViewData.ContainsKey("IsProgressPage");
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>TRuDI - @ViewData["Title"]</title>
+
+    <environment>
+        <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.css" />
+        <link rel="stylesheet" href="~/lib/font-awesome/css/font-awesome.min.css" />
+        <link rel="stylesheet" href="~/lib/eonasdan-bootstrap-datetimepicker/build/css/bootstrap-datetimepicker.min.css" />
+        <link rel="stylesheet" href="~/css/site.css" />
+    </environment>
+</head>
+<body>
+
+    <nav class="navbar navbar-default navbar-fixed-top">
+        <div class="container">
+            <div class="">
+                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+
+                @if (StateService.OperationMode == OperationMode.DisplayFunction)
+                {
+                    <div class="navbar-brand">TRuDI Anzeigefunktion</div>
+                }
+                else if (StateService.OperationMode == OperationMode.TransparencyFunction)
+                {
+                    <div class="navbar-brand">TRuDI Transparenzfunktion</div>
+                }
+                else
+                {
+                    <div style="height: 8px;"></div>
+                }
+
+                <div>
+                    <h2 style="margin-top: 0px;">@ViewData["Title"]</h2>
+                </div>
+
+                @if (!isProgressPage)
+                {
+                    <text><ul class="breadcrumb">
+                        </text>
+                }
+                else
+                {
+                    <text>
+                    <ul class="breadcrumb" style="opacity: 0.4;">
+                        </text>
+                }
+
+                @foreach (var item in StateService.BreadCrumbTrail.Items)
+                {
+                    var itemClass = string.Empty;
+                    if (item.IsActive)
+                    {
+                        itemClass = "completed";
+                    }
+                    else if (item.IsSelected)
+                    {
+                        itemClass = "active";
+                    }
+
+                    if (isProgressPage)
+                    {
+                        <li class="@itemClass"><span>@item.Name</span></li>
+                    }
+                    else
+                    {
+
+                        <li class="@itemClass"><a href="/BreadCrumb?id=@item.Id">@item.Name</a></li>
+                    }
+                }
+            </ul>
+    </div>
+
+    <div id="navbar" class="navbar-collapse collapse">
+    </div>
+</div>
+</nav>
+
+<script>
+    if (typeof module === 'object') {
+        window.module = module;
+        module = undefined;
+    }
+</script>
+
+<environment>
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
+    <script src="~/lib/moment/min/moment-with-locales.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.min.js"></script>
+    <script src="~/js/site.js"></script>
+    <script src="~/lib/eonasdan-bootstrap-datetimepicker/build/js/bootstrap-datetimepicker.min.js"></script>
+</environment>
+
+<script>
+    if (window.module) {
+        module = window.module;
+    }
+
+
+    // Adjust height of the fixed navbar
+    function adjust_body_offset() {
+        $('body').css('padding-top', $('.navbar-default').outerHeight(true) + 'px');
+    }
+
+    $(window).resize(adjust_body_offset);
+    $(document).ready(adjust_body_offset);
+
+    function showSaveFileDialog(url, fileExtensionDescription, fileExtension) {
+        var remote = require('electron').remote;
+        var dialog = remote.dialog;
+
+       dialog.showSaveDialog({
+          title: "Daten exportieren",
+          filters: [
+             { name: fileExtensionDescription, extensions: [fileExtension] },
+          ]
+       }).then((result) => {
+          if (result.filePath === undefined) {
+             return;
+          }
+
+          $.ajax({
+             url: url,
+             type: "POST",
+             data: "filename=" + encodeURIComponent(result.filePath),
+             contentType: 'application/x-www-form-urlencoded',
+             processData: false,
+             success: function (result) { },
+             error: function (err) { }
+          });
+
+       }).catch((...args) => {
+          console.warn('showSaveDialog failed/rejected with', args)
+       });
+    }
+</script>
+
+@RenderSection("Scripts", required: false)
+
+<div class="container body-content">
+    <div class="row">
+        <div class="col-md-8" id="body-container">
+            @RenderBody()
+        </div>
+
+        <div class="col-md-4">
+            <div class="well">
+                <div>
+                    @foreach (var menuItem in StateService.SideBarMenu.Items)
+                    {
+                        if (menuItem.Name == null)
+                        {
+                            <hr />
+
+                            continue;
+                        }
+
+                        if (isProgressPage)
+                        {
+                            <div style="opacity: 0.5;">@menuItem.Name</div>
+                        }
+                        else
+                        {
+                            <div>
+                                @if (menuItem.UseOnClick)
+                                {
+                                    <a onclick="@menuItem.Link" style="cursor:pointer;">@menuItem.Name</a>
+                                }
+                                else
+                                {
+                                    <a href="@menuItem.Link">@menuItem.Name</a>
+                                }
+                            </div>
+                        }
+                    }
+                </div>
+            </div>
+
+            @if (StateService.ActiveHanAdapter?.GatewayImageView != null)
+            {
+                <div class="panel panel-default">
+                    <div class="panel-heading">@StateService.ActiveHanAdapter.DeviceId.ToFormattedDeviceId()</div>
+                    <div class="panel-body" style="overflow: hidden;">
+                        @await Component.InvokeAsync(StateService.ActiveHanAdapter.GatewayImageView, new { deviceId = StateService.ActiveHanAdapter.DeviceId })
+                    </div>
+                    <div class="panel-footer">
+                        @if (isProgressPage)
+                        {
+                            <div style="opacity: 0.5;">Details zum Smart Meter Gateway</div>
+                        }
+                        else
+                        {
+                            <div>
+                                <a href="/GatewayDetails">Details zum Smart Meter Gateway</a>
+                            </div>
+                        }
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+</body>
+</html>

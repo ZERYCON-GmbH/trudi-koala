@@ -1,0 +1,133 @@
+﻿@using System
+@using Microsoft.AspNetCore.Mvc.ViewFeatures
+@using TRuDI.Backend.Application
+@model ConnectData
+@inject ApplicationState StateService
+@{
+    ViewData["Title"] = "Tarifdefinition laden";
+}
+
+<div>
+    <ul class="nav nav-tabs" role="tablist">
+        <li role="presentation" class="active"><a href="#loadFromFile" aria-controls="loadFromFile" role="tab" data-toggle="tab">Aus Datei laden</a></li>
+        <li role="presentation"><a href="#loadFromWeb" aria-controls="loadFromWeb" role="tab" data-toggle="tab">Aus Internet laden</a></li>
+    </ul>
+
+    <div class="tab-content">
+        <div role="tabpanel" class="tab-pane active" id="loadFromFile">
+            <div class="panel panel-primary">
+                <div class="panel-heading">Tarifdaten aus lokaler Datei laden</div>
+                <div class="panel-body">
+
+                    <p>
+                        Erfolgt die Tarifierung nicht im Smart Meter Gateway selbst, sondern anhand einer Zählerstandsgangmessung
+                        bei Ihrem Lieferanten, erhalten Sie von diesem eine Datei mit Tarifierungsinformationen. Mittels dieser Datei
+                        kann TRuDI die zur Rechnungsprüfung benötitgten Daten aus dem Smart Meter Gateway laden, die Tarifregister 
+                        berechnen und anzeigen.
+                    </p>
+
+                    <form id="xmlFileForm">
+                        <div class="form-group">
+                            <button type="button" class="btn btn-default" id="btnXmlUpload" onclick="openfileDialogXml();">Datei auswählen...</button>
+                            <input type="file" id="xmlFileLoader" accept="application/xml" style="display: none" onchange="onXmlSelected();" />
+                            <div id="xmlFileErrors"></div>
+                        </div>
+                    </form>
+
+                    <div id="xmlFileLoadError" class="alert alert-danger" role="alert" style="display: none">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div role="tabpanel" class="tab-pane" id="loadFromWeb">
+            <div class="panel panel-primary">
+                <div class="panel-heading">Tarifdaten aus dem Internet laden</div>
+                <div class="panel-body">
+                    
+                    <p>
+                        Erfolgt die Tarifierung nicht im Smart Meter Gateway selbst, sondern anhand einer Zählerstandsgangmessung
+                        bei Ihrem Lieferanten, erhalten Sie von diesem eine Datei mit Tarifierungsinformationen. Mittels dieser Datei
+                        kann TRuDI die zur Rechnungsprüfung benötitgten Daten aus dem Smart Meter Gateway laden, die Tarifregister 
+                        berechnen und anzeigen.
+                    </p>
+
+                    <p>Sollten Sie von Ihrem Lieferanten einen Download-Link erhalten haben, kann dieser hier in das Feld Download-Adresse eingefügt werden.</p>
+
+                    <form id="webFileForm">
+                        <div>
+                            <div class="form-group">
+                                <label for="url">Download-Adresse:</label>
+                                <input type='text' id="url" class="form-control" />
+                            </div>
+                            <div class="form-group">
+                                <label for="username">Benutzername:</label>
+                                <input type='text' id="username" class="form-control" />
+                            </div>
+                            <div class="form-group">
+                                <label for="password">Passwort:</label>
+                                <input type='password' id="password" class="form-control" />
+                            </div>
+                            <div class="form-group">
+                                <button type="button" class="btn btn-default" id="btnRead" onclick="onDownloadFile();">Download</button>
+                            </div>
+                        </div>
+                    </form>
+
+                    <div id="fileDownloadError" class="alert alert-danger" role="alert" style="display: none">
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<script language="javascript" type="text/javascript">
+
+    function openfileDialogXml() {
+        $("#xmlFileLoader").click();
+    }
+
+    function onXmlSelected() {
+        var fileUpload = $("#xmlFileLoader").get(0);
+        var files = fileUpload.files;
+        var fileData = new FormData();
+
+        for (var i = 0; i < files.length; i++) {
+            fileData.append(files[i].name, files[i]);
+        }
+
+        $.ajax({
+            url: '/SupplierFile/UploadXmlFile',
+            type: "POST",
+            contentType: false,
+            processData: false,
+            data: fileData,
+            success: function (result) {
+                window.location.href = "/SupplierFile/BillingPeriodSelection";
+            },
+            error: function (err) {
+                $("#xmlFileLoadError").html(err.responseText).show();
+            }
+        });
+    }
+
+    function onDownloadFile() {
+
+        $.ajax({
+            url: '/SupplierFile/DownloadFile',
+            type: "POST",
+            data: "url=" + encodeURIComponent($("#url").val()) + "&username=" + encodeURIComponent($("#username").val()) + "&password=" + encodeURIComponent($("#password").val()),
+            contentType: 'application/x-www-form-urlencoded',
+            processData: false,
+            success: function (result) {
+                window.location.href = "/SupplierFile/BillingPeriodSelection";
+            },
+            error: function (err) {
+                $("#fileDownloadError").html(err.responseText).show();
+            }
+        });
+    };
+</script>

@@ -1,0 +1,143 @@
+﻿@using TRuDI.Backend.Application
+@using TRuDI.Backend.Utils
+@using TRuDI.HanAdapter.Interface
+@using TRuDI.Models
+@model ConnectData
+@inject ApplicationState StateService
+@{
+    var data = StateService.CurrentSupplierFile.Model;
+    ViewData["Title"] = "Tarifdaten";
+}
+
+<div class="panel panel-primary">
+    <div class="panel-heading">Messlokation @data.UsagePointId</div>
+    <div class="panel-body">
+        <table class="table">
+            <tr>
+                <th>ID des Kunden</th>
+                <td>@data.Customer?.CustomerId</td>
+            </tr>
+
+            <tr>
+                <th>ID des Rechnungsstellers</th>
+                <td>@data.InvoicingParty.InvoicingPartyId</td>
+            </tr>
+
+            <tr>
+                <th>Smart Meter Gateway</th>
+                <td>@data.Smgw?.SmgwId.ToFormattedDeviceId()</td>
+            </tr>
+
+            <tr>
+                <th>Tarifbezeichnung</th>
+                <td>@data.TariffName</td>
+            </tr>
+            
+            <tr>
+                <th>Energieart</th>
+                <td>@data.ServiceCategory.Kind.ToServiceCategoryString()</td>
+            </tr>
+
+            <tr>
+                <th>Tarifanwendungsfall</th>
+                <td>@data.AnalysisProfile.TariffUseCase.TafToFriendlyName()</td>
+            </tr>
+
+            <tr>
+                <th>Startzeitpunkt der Abrechnungsperiode</th>
+                <td>@data.AnalysisProfile.BillingPeriod.Start.ToFormatedString()</td>
+            </tr>
+
+            <tr>
+                <th>Endzeitpunkt der Abrechnungsperiode</th>
+                <td>@data.AnalysisProfile.BillingPeriod.GetEnd().ToFormatedString()</td>
+            </tr>
+
+            <tr>
+                <th>RIPEMD-160-Prüfsumme</th>
+                <td style="font-family: monospace;">@StateService.CurrentSupplierFile.DigestRipemd160.AddSpace(4)</td>
+            </tr>
+
+            <tr>
+                <th>SHA-3-Prüfsumme</th>
+                <td style="font-family: monospace;">@StateService.CurrentSupplierFile.DigestSha3.AddSpace(4)</td>
+            </tr>
+        </table>
+
+        <table class="table-condensed">
+            <tr>
+                <th>Startzeitpunkt der Ablesung</th>
+                <th>Endzeitpunkt der Ablesung</th>
+                <th></th>
+            </tr>
+            <tr>
+                <td>
+                    <div class="form-group">
+                        <div class='input-group date' id="dtpStart">
+                            <input type='text' class="form-control" />
+                            <span class="input-group-addon">
+                                <span class="glyphicon glyphicon-calendar"></span>
+                            </span>
+                        </div>
+                    </div>
+                </td>
+
+                <td>
+                    <div class="form-group">
+                        <div class='input-group date' id="dtpEnd">
+                            <input type='text' class="form-control" />
+                            <span class="input-group-addon">
+                                <span class="glyphicon glyphicon-calendar"></span>
+                            </span>
+                        </div>
+                    </div>
+                </td>
+                <td>
+                    <div class="form-group">
+                        <button type="button" class="btn btn-default" id="btnRead" onclick="startReading();">Messdaten laden</button>
+                    </div>
+                </td>
+            </tr>
+        </table>
+
+
+
+    </div>
+</div>
+<script language="javascript" type="text/javascript">
+    $(function() {
+        $("#dtpStart").datetimepicker({
+            locale: 'de',
+            format: 'DD.MM.YYYY'
+        });
+        $("#dtpEnd").datetimepicker({
+            useCurrent: false,
+            locale: 'de',
+            format: 'DD.MM.YYYY'
+        });
+
+        $("#dtpStart").data("DateTimePicker").maxDate(moment('@data.AnalysisProfile.BillingPeriod.Start.ToIso8601()'));
+        $("#dtpStart").data("DateTimePicker").date(moment('@data.AnalysisProfile.BillingPeriod.Start.ToIso8601()'));
+
+        $("#dtpEnd").data("DateTimePicker").minDate(moment('@data.AnalysisProfile.BillingPeriod.GetEnd().ToIso8601()'));
+        $("#dtpEnd").data("DateTimePicker").date(moment('@data.AnalysisProfile.BillingPeriod.GetEnd().ToIso8601()'));
+    });
+
+    function startReading(contractIndex) {
+
+        $.ajax({
+            url: '/SupplierFile/StartReadout',
+            type: "POST",
+            data:
+            "startTime=" + encodeURIComponent($("#dtpStart").data("DateTimePicker").date().toISOString()) +
+            "&endTime=" + encodeURIComponent($("#dtpEnd").data("DateTimePicker").date().toISOString()),
+            contentType: 'application/x-www-form-urlencoded',
+            processData: false,
+            success: function (result) {
+                window.location.href = "/Connect";
+            },
+            error: function (err) { }
+        });
+    }
+
+</script>

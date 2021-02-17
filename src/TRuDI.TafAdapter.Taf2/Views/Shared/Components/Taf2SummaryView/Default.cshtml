@@ -1,0 +1,34 @@
+﻿@using TRuDI.Models
+@using TRuDI.TafAdapter.Interface.Taf2
+@model ITaf2Data
+
+<table class="table">
+    <tr>
+        <th>Register</th>
+        <th class="text-right">Wert</th>
+        <th>Einheit</th>
+        <th>Beschreibung</th>
+    </tr>
+
+    @foreach (var register in Model.SummaryRegister.GetAccountingRegistersWithTotal())
+    {
+        <tr>
+            <td>@register.ObisCode.ToString()</td>
+
+            @if (register.SourceType != null)
+            {
+                <td class="text-right">
+                    @register.Amount.GetDisplayValue(register.SourceType)
+                </td>
+                <td>@register.SourceType.Uom.GetDisplayUnit(register.SourceType.PowerOfTenMultiplier.Value)</td>
+            }
+            else
+            {
+                <td colspan="2">Wert kann nicht Formatiert werden: @register.Amount</td>
+            }
+
+            <td>@register.ObisCode.GetLabel()</td>
+        </tr>
+    }
+
+</table>

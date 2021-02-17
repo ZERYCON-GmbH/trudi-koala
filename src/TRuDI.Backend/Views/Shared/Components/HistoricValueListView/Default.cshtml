@@ -1,0 +1,31 @@
+﻿@using TRuDI.Backend.Utils
+@using TRuDI.Models
+@model OriginalValueList
+
+@if (Model.HistoricValues == null || Model.HistoricValues.Count == 0)
+{
+    <p>Zur Berechnung von historsichen Verbrauchswerten liegen nicht genügend Daten vor.</p>
+}
+else
+{
+    <table class="table-condensed">
+        <tr>
+            <th>Beschreibung</th>
+            <th class="text-right">Wert</th>
+            <th>Einheit</th>
+        </tr>
+
+        @foreach (var entry in Model.HistoricValues)
+        {
+            if (entry.Value != null)
+            {
+                <tr>
+                    <td>@entry.ToHistoricValueDescription()</td>
+                    <td class="text-right">@entry.Value.GetDisplayValue(Model.Uom, Model.PowerOfTenMultiplier, Model.Scaler)</td>
+                    <td>@Model.DisplayUnit</td>
+                </tr>
+            }
+        }
+
+    </table>
+}

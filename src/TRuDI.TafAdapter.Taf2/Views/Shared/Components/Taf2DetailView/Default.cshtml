@@ -1,0 +1,62 @@
+﻿@using TRuDI.Models
+@using TRuDI.TafAdapter.Interface.Taf2
+@model ITaf2Data
+
+<table>
+    <tr>
+        <td></td>
+        <td>
+            <div class="form-group">
+                <div class='input-group date' id="tariffDataViewDaySelection">
+                    <input type='text' class="form-control" />
+                    <span class="input-group-addon">
+                        <span class="glyphicon glyphicon-calendar"></span>
+                    </span>
+                </div>
+            </div>
+        </td>
+        <td></td>
+    </tr>
+</table>
+
+<div id="tariff-day-view">
+    @await Component.InvokeAsync("TariffDataView", new { timestamp = Model.Begin })
+</div>
+
+<script type="text/javascript">
+        $(function () {
+            $("#tariffDataViewDaySelection").datetimepicker({
+                locale: 'de',
+                format: 'DD.MM.YYYY'
+            });
+
+            $("#tariffDataViewDaySelection").data("DateTimePicker").minDate(moment('@Model.Begin.Date.ToIso8601()'));
+            $("#tariffDataViewDaySelection").data("DateTimePicker").maxDate(moment('@Model.End.GetDateTimePickerEndDate().Date.ToIso8601()'));
+            $("#tariffDataViewDaySelection").data("DateTimePicker").date(moment('@Model.Begin.Date.ToIso8601()'));
+
+            $("#tariffDataViewDaySelection").on("dp.change", function (e) {
+                selectTariffViewDay();
+            });
+
+            selectTariffViewDay();
+        });
+
+        function selectTariffViewDay() {
+            console.log("selectTariffViewDay: timestamp= " + encodeURIComponent($("#tariffDataViewDaySelection").data("DateTimePicker").date().toISOString()));
+
+            $.ajax({
+                url: '/Taf2DetailView/SelectTariffViewDay',
+                type: "POST",
+                data: "timestamp=" + encodeURIComponent($("#tariffDataViewDaySelection").data("DateTimePicker").date().toISOString()),
+                contentType: 'application/x-www-form-urlencoded',
+                processData: false,
+                success: function (result) {
+                    $("#tariff-day-view").html(result);
+                },
+                error: function(err) {
+                    console.log("error: " + err);
+                }
+            });
+        };
+</script>
+

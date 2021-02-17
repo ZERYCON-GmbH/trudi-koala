@@ -1,0 +1,99 @@
+{
+  "DeviceId": "",
+  "User": "",
+  "Password": "",
+  "IPAddress": "",
+  "IPPort": "",
+  "TimeToConnect": "",
+  "Cert": "",
+  "Version": {
+    "Component": "",
+    "Version": "",
+    "Hash": ""
+  },
+  "Contracts": [
+    {
+      "TafId": "",
+      "TafName": "",
+      "Description": "",
+      "Meters": [
+        ""
+      ],
+      "MeteringPointId": "",
+      "SupplierId": "",
+      "ConsumerId": "",
+      "Begin": "",
+      "End": "",
+      "BillingPeriods": [
+        {
+          "Begin": "",
+          "End": ""
+        }
+      ]
+    }
+  ],
+  "WithLogData": "",
+  "XmlConfig": {
+    "UsagePointId": "",
+    "TariffName": "",
+    "TariffId": "",
+    "CustomerId": "",
+    "InvoicingPartyId": "",
+    "SgmwId": "",
+    "ServiceCategoryKind": "",
+    "RandomLogCount": "",
+    "LogCount": "",
+    "PossibleLogMessages": [
+      "",
+      ""
+    ],
+    "Certificates": [
+      {
+        "Certificate": {
+          "CertId": "",
+          "CertType": "",
+          "ParentCertId": ""
+        },
+        "CertContent": ""
+      }
+    ],
+    "TariffUseCase":  "",
+    "TariffStageCount": "",
+    "DefaultTariffNumber": "",
+    "DayIdCount": "",
+    "MaxPeriodValue": "",
+    "MeterReadingConfigs": [
+      {
+        "MeterId": "",
+        "MeterReadingId": "",
+        "IsOML": "",
+        "OMLInitValue": "",
+        "PeriodSeconds": "",
+        "PowerOfTenMultiplier": "",
+        "Uom": "",
+        "Scaler": "",
+        "ObisCode": "",
+        "UsedStatus":  ""
+      }
+    ],
+    "TariffStageConfigs": [
+      {
+        "TariffNumber": "",
+        "Description": "",
+        "ObisCode": ""
+      }
+    ],
+    "DayProfiles": [
+      {
+        "DayId": "",
+        "DayTimeProfiles": [
+          {
+            "Start": "",
+            "End": "",
+            "TariffNumber":  ""
+          }
+        ]
+      }
+    ]
+  }
+}

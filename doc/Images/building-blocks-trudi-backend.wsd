@@ -1,0 +1,43 @@
+@startuml
+
+skinparam componentStyle uml2
+
+frame TRuDI.Backend {
+
+    component "ApplicationState" as App
+    component "Views" as Views
+
+    component "TRuDI.HanAdapter.Repository" as HanAdapterRepo
+    component "TRuDI.TafAdapter.Repository" as TafAdapterRepo
+
+    App --> HanAdapterRepo
+    App --> TafAdapterRepo
+    App <--> Views
+
+    interface IHanAdapter as IHanAdapter1
+    interface IHanAdapter as IHanAdapter2
+    
+    component "TRuDI.HanAdapter.Adapter1" as HanAdapter1
+    component "TRuDI.HanAdapter.AdapterN" as HanAdapterN
+
+    IHanAdapter1 --- HanAdapter1
+    IHanAdapter2 --- HanAdapterN
+
+    HanAdapterRepo ..> IHanAdapter1
+    HanAdapterRepo ..> IHanAdapter2
+
+    interface ITafAdapter as ITafAdapter1
+    interface ITafAdapter as ITafAdapter2
+
+    component "TRuDI.TafAdapter.Taf1" as TafAdapter1
+    component "TRuDI.TafAdapter.Taf2" as TafAdapter2
+
+    TafAdapterRepo ..> ITafAdapter1
+    TafAdapterRepo ..> ITafAdapter2
+
+    ITafAdapter1 --- TafAdapter1
+    ITafAdapter2 --- TafAdapter2
+}
+
+@enduml
+
