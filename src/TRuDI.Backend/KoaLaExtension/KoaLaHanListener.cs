@@ -64,36 +64,5 @@ namespace TRuDI.Backend.KoaLaExtension
 
          });
       }
-
-      private static String Read(NetworkStream stream)
-      {
-         var bytes = new Byte[1024];
-         int i;
-         String data = "";
-
-         // Request lesen
-         while ((i = stream.Read(bytes, 0, bytes.Length)) != 0)
-         {
-            data = System.Text.Encoding.ASCII.GetString(bytes, 0, i);
-         }
-
-         return data;
-      }
-
-      private static void Write(NetworkStream stream, String data)
-      {
-         var bytes = System.Text.Encoding.ASCII.GetBytes(data);
-         stream.Write(bytes, 0, bytes.Length);
-      }
-
-      public static Stream GenerateStreamFromString(string s)
-      {
-         var stream = new MemoryStream();
-         var writer = new StreamWriter(stream);
-         writer.Write(s);
-         writer.Flush();
-         stream.Position = 0;
-         return stream;
-      }
    }
 }
