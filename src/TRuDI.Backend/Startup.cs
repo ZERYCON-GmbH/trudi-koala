@@ -1,4 +1,4 @@
-﻿namespace TRuDI.Backend
+namespace TRuDI.Backend
 {
     using System;
 
@@ -20,6 +20,8 @@
     using TRuDI.TafAdapter.Repository;
 
     using WebSocketManager;
+
+   using TRuDI.Backend.KoaLaExtension; 
 
     public class Startup
     {
@@ -59,6 +61,8 @@
                     options.FileProviders.Add(new EmbeddedFileProvider(tafAdapterInfo.Assembly, tafAdapterInfo.BaseNamespace));
                 }
             });
+
+            services.AddSingleton<TRuDI.Backend.KoaLaExtension.IKoaLaHanListener, TRuDI.Backend.KoaLaExtension.KoaLaHanListener>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
