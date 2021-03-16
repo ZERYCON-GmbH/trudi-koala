@@ -10,8 +10,10 @@ namespace TRuDI.Backend.KoaLaExtension
 {
    public class KoaLaHanListener : IKoaLaHanListener
    {
+      private const int PORT = 1337;
+      
       KoaLaHanListener()
-      {
+      {    
          var JobRequestDeseiralizer = new XmlSerializer(typeof(JobRequestDto));
          var JobResponseSerializer = new XmlSerializer(typeof(JobResponseDto));
          var StatusRequestDeserializer = new XmlSerializer(typeof(StatusRequestDto));
@@ -19,10 +21,13 @@ namespace TRuDI.Backend.KoaLaExtension
          var DataRequestSerializer = new XmlSerializer(typeof(DataRequestDto));
          var DataResponseSerializer = new XmlSerializer(typeof(DataResponseDto));
 
+         object jobDetailLock = new object();
          var jobDone = false;
+         var jobProgress = 0;
+         object jobResult;
 
 
-         var tcp = new TcpWrapper(1337, stream =>
+         var tcp = new TcpWrapper(PORT, stream =>
          {
             var jobResponse = JobRequestDeseiralizer.Deserialize(stream);
 
@@ -32,36 +37,38 @@ namespace TRuDI.Backend.KoaLaExtension
                JobId = jobId
             });
 
-            // detatch worker thread here
+            // detatch worker thread here, use labda to or call by reference to use job*-Variables
 
             while (true)
             {
                var statusRequest = StatusRequestDeserializer.Deserialize(stream);
 
-               // ToDo: get thread status               
-               if (jobDone)
+               lock (jobDetailLock)
                {
-                  StatusResponseSerializer.Serialize(stream, new StatusResponseDto
+                  if (jobDone)
                   {
-                     JobId = jobId,
-                     Status = JobStatus.Done,
-                     Progress = 100
-                  });
-               } 
-               else
-               {
-                  StatusResponseSerializer.Serialize(stream, new StatusResponseDto
+                     StatusResponseSerializer.Serialize(stream, new StatusResponseDto
+                     {
+                        JobId = jobId,
+                        Status = JobStatus.Done,
+                        Progress = 100
+                     });
+                  }
+                  else
                   {
-                     JobId = jobId,
-                     Status = JobStatus.Running,
-                     Progress = 25
-                  });
-                  break;
+                     StatusResponseSerializer.Serialize(stream, new StatusResponseDto
+                     {
+                        JobId = jobId,
+                        Status = JobStatus.Running,
+                        Progress = jobProgress
+                     });
+                     break;
+                  }
                }
             }
 
             var dataRequest = DataRequestSerializer.Deserialize(stream);
-
+            // ToDo: return 
          });
       }
    }
